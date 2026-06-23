@@ -120,6 +120,8 @@ output "eDP-1" {
     // automatically.
     position x=0 y=0
 }
+
+// niri msg outputs
 output "HP Inc. HP E243i CNK7461MHV" {
     // scale 1
     position x=0 y=-1200
@@ -127,6 +129,11 @@ output "HP Inc. HP E243i CNK7461MHV" {
 
 }
 
+output "PNP(BNQ) BenQ PD2700U ETT3L03210SL0" {
+    scale 1.5
+    position x=0 y=-1440
+
+}
 // Settings that influence how windows are positioned and sized.
 // Find more information on the wiki:
 // https://yalter.github.io/niri/Configuration:-Layout
@@ -743,7 +750,7 @@ binds {
     // moving the mouse or pressing any other key.
     Mod+Shift+P { power-off-monitors; }
 
-
+    Mod+Ctrl+Escape hotkey-overlay-title="Xkill" { spawn-sh "$HOME/.config/niri/scripts/niri-force-kill-window" ; }
 
     //noctalia binds
     Mod+Space hotkey-overlay-title="Run an Application: noctalia" { spawn-sh "noctalia-shell ipc call launcher toggle"; }
@@ -771,9 +778,23 @@ workspace "code" {
 // }
 
 // clipboard { disable-primary; }
+window-rule {
+    // This app-id regular expression will work for both:
+    // - host Firefox (app-id is "firefox")
+    // - Flatpak Firefox (app-id is "org.mozilla.firefox")
+    match app-id=r#"firefox$"#
+    open-floating true
+}
+window-rule {
+    match title="^PCB Editor$"
+    match title="^Schematic Editor$"
+    match title="^3D Viewer$"
 
-
-
+    default-column-width { proportion 1.0; }
+}
+window-rule {
+    default-column-width { proportion 1.0; }
+}
 window-rule {
     match at-startup=true app-id=r#"^app\.zen_browser\.zen$"#
          

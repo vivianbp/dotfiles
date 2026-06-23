@@ -1,0 +1,182 @@
+#!/usr/bin/env bash
+# from https://github.com/Fisherman6a/niri-dotfiles/blob/main/niri/scripts/niri-force-kill-window
+# niri-force-kill-window
+# Force kill (SIGKILL) any window via mouse click. Supports single-process and
+# full process-tree kill modes. Handles both native Wayland and XWayland apps.
+
+# ==========================================
+# 0. getopts
+# ==========================================
+KILL_FAMILY=false
+SHOW_HELP=false
+
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        -f|--family) KILL_FAMILY=true ;;
+        -h|--help) SHOW_HELP=true ;;
+        *) echo "Unknown option: $1"; exit 1 ;;
+    esac
+    shift
+done
+
+
+# ==========================================
+# 1. Help text
+# ==========================================
+STR_HELP="Usage: niri-force-kill-window [OPTIONS]
+
+Force kill (SIGKILL) an unresponsive window via mouse click.
+Automatically compatible with native Wayland and XWayland apps.
+
+Options:
+  -f, --family   Kill the entire process tree associated with the window
+  -h, --help     Show this help message and exit"
+
+STR_ERR_DEP_TITLE="Missing Dependency"
+STR_ERR_DEP_MSG="Command not found: %s\nPlease install: %s"
+STR_ERR_INFO_TITLE="Info Error"
+STR_ERR_INFO_MSG="Could not determine window or process information."
+STR_ERR_KILL_TITLE="Kill Failed"
+STR_ERR_KILL_MSG="Could not extract target real PID."
+
+STR_SUCC_TITLE="Force Killed (%s)"
+STR_SUCC_MSG_SINGLE="App: %s\nTarget window process (PID: %s) terminated."
+STR_SUCC_MSG_FAMILY="App: %s\nProcess tree cleaned: %s processes terminated."
+STR_UNKNOWN_APP="Unknown App"
+
+
+if [[ "$SHOW_HELP" == true ]]; then
+    echo -e "$STR_HELP"
+    exit 0
+fi
+
+# ==========================================
+# 2. Dependency checking
+# ==========================================
+check_dependency() {
+    local cmd="$1" pkg="$2"
+    if ! command -v "$cmd" &> /dev/null; then
+        local msg; printf -v msg "$STR_ERR_DEP_MSG" "$cmd" "$pkg"
+        if command -v notify-send &> /dev/null; then
+            notify-send "$STR_ERR_DEP_TITLE" "$msg" -u critical -i dialog-error
+        else
+            echo -e "[${STR_ERR_DEP_TITLE}]\n${msg}" >&2
+        fi
+        exit 1
+    fi
+}
+
+check_dependency "niri" "niri"
+check_dependency "notify-send" "libnotify"
+check_dependency "xprop" "xorg-xprop"
+
+notify_and_play() {
+    local title="$1" msg="$2"
+    notify-send "$title" "$msg" -a "Window Killer" -i application-exit
+    # Play an error sound if PipeWire's pw-play is available
+    if command -v pw-play &> /dev/null; then
+        pw-play /usr/share/sounds/freedesktop/stereo/dialog-error.oga >/dev/null 2>&1 &
+    fi
+}
+
+# ==========================================
+# 3. Capture target window and detect protocol
+# ==========================================
+# niri msg pick-window blocks until the user clicks a window, then prints its info.
+# Exit silently if the user cancels (empty output or non-zero exit).
+if ! output=$(niri msg pick-window 2>/dev/null); then exit 0; fi
+if [[ -z "$output" ]]; then exit 0; fi
+
+pid=$(grep -oP 'PID:\s*\K\d+' <<< "$output")
+app_id=$(grep -oP 'App ID:\s*"\K[^"]+' <<< "$output")
+app_name="${app_id:-$STR_UNKNOWN_APP}"
+
+if [[ -z "$pid" ]]; then exit 0; fi
+if [[ ! -f "/proc/$pid/comm" ]]; then
+    notify-send "$STR_ERR_INFO_TITLE" "$STR_ERR_INFO_MSG" -a "Window Killer" -i dialog-error
+    exit 1
+fi
+
+process_name=$(<"/proc/$pid/comm")
+process_name_lower="${process_name,,}"
+
+# For XWayland windows, the PID niri reports is the Xwayland host process itself,
+# not the actual X client app. We must query _NET_WM_PID on the currently active
+# X window to get the real client PID. A brief sleep lets XWayland update the
+# active window property after niri receives the click.
+if [[ "$process_name_lower" == *"xwayland"* ]]; then
+    proto_str="XWayland"
+    sleep 0.05
+    active_wid=$(xprop -root -notype _NET_ACTIVE_WINDOW 2>/dev/null | grep -o '0x[0-9a-fA-F]\+')
+    real_pid=$(xprop -id "$active_wid" -notype _NET_WM_PID 2>/dev/null | grep -oP '\d+')
+else
+    proto_str="Wayland"
+    real_pid="$pid"
+fi
+
+if [[ -z "$real_pid" ]]; then
+    notify-send "$STR_ERR_KILL_TITLE" "$STR_ERR_KILL_MSG" -a "Window Killer" -i dialog-error
+    exit 1
+fi
+
+# ==========================================
+# 4. Kill logic (single process or full tree)
+# ==========================================
+if [[ "$KILL_FAMILY" == true ]]; then
+    # Walk up /proc/<pid>/stat to find the highest ancestor that still belongs
+    # to this app (i.e., stop before reaching session managers, shells, or PID 1).
+    # Parsing stat directly avoids spawning ps/pstree and is faster for frozen apps.
+    app_root=$real_pid
+    current=$real_pid
+
+    while true; do
+        stat_file="/proc/$current/stat"
+        if [[ ! -r "$stat_file" ]]; then break; fi
+
+        stat_content=$(<"$stat_file")
+        # The comm field in stat is wrapped in parentheses and may contain spaces;
+        # strip everything up to and including the first ')' to isolate it safely.
+        pname="${stat_content#*(}"
+        pname="${pname%)*}"
+
+        # Everything after ") " is the remaining fields; ppid is the second field.
+        rest="${stat_content##*) }"
+        read -r _ ppid _ <<< "$rest"
+
+        # Stop climbing when we hit init, PID 1, or a known system/shell boundary.
+        if [[ -z "$ppid" || "$ppid" == "1" || "$ppid" == "0" ]]; then break; fi
+        if [[ "$pname" =~ ^(systemd|niri|bash|zsh|fish|tmux|screen|dms|xwayland.*|sshd|login|init|sway|hyprland)$ ]]; then
+            break
+        fi
+
+        app_root=$ppid
+        current=$ppid
+    done
+
+    # Recursively collect all descendants of the root, then kill the whole group.
+    get_descendants() {
+        local p=$1
+        echo "$p"
+        for c in $(pgrep -P "$p" 2>/dev/null); do
+            get_descendants "$c"
+        done
+    }
+
+    family_pids=$(get_descendants "$app_root")
+    pid_count=$(echo "$family_pids" | wc -w)
+
+    # Word-split $family_pids intentionally here — each token is a PID.
+    kill -9 $family_pids 2>/dev/null
+
+    printf -v final_title "$STR_SUCC_TITLE" "$proto_str"
+    printf -v final_msg "$STR_SUCC_MSG_FAMILY" "$app_name" "$pid_count"
+
+else
+    # Default: kill only the single window process.
+    kill -9 "$real_pid" 2>/dev/null
+
+    printf -v final_title "$STR_SUCC_TITLE" "$proto_str"
+    printf -v final_msg "$STR_SUCC_MSG_SINGLE" "$app_name" "$real_pid"
+fi
+
+notify_and_play "$final_title" "$final_msg"
