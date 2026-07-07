@@ -22,6 +22,8 @@
   };
 
   programs = {
+    nix-index-database.comma.enable = true;
+
     direnv = {
       enable = true;
       nix-direnv.enable = true; # caches nix develop shells so they load instantly
@@ -136,6 +138,7 @@
     prismlauncher
     python313
     rsyslog
+    rquickshare
     # rustup in dev shells
     runelite # cuz i love my girlfriends
     samba

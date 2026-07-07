@@ -14,6 +14,10 @@ setopt EXTENDED_HISTORY       # save timestamp + duration in history file
 setopt INC_APPEND_HISTORY     # append immediately, not on shell exit
 setopt NO_SHARE_HISTORY       # don't merge history across sessions (required for folder-scoped history)
 
+# ── Completion ────────────────────────────────────────────────────────────────
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/compcache"
+
 # ── Shell behaviour ───────────────────────────────────────────────────────────
 setopt AUTO_CD                # type a directory name to cd into it
 setopt PUSHD_IGNORE_DUPS      # no duplicate entries in the dir stack
@@ -38,7 +42,14 @@ alias nixgens='sudo nix-env -p /nix/var/nix/profiles/system --list-generations'
 # ── Aliases: dotfile config ───────────────────────────────────────────────────
 # Bare-repo git wrapper for dotfiles tracked in ~/.cfg
 alias config='/run/current-system/sw/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
-compdef config=git
+
+# Fast completion for config: set git dir env vars so _git doesn't scan $HOME for files
+_config_complete() {
+  local -x GIT_DIR="$HOME/.cfg"
+  local -x GIT_WORK_TREE="$HOME"
+  _git
+}
+compdef _config_complete config
 
 # Convenience shortcuts for opening NixOS configs in editors
 alias chpkg='${EDITOR:-nano} ~/.config/nixos/programs.nix'
