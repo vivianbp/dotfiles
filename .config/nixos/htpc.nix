@@ -3,8 +3,11 @@ let
   plasmaBigscreenPkg = inputs.plasma-bigscreen.packages.x86_64-linux.plasma-bigscreen;
 in
 {
-  services.desktopManager.plasma6.enable = true;
+  # services.desktopManager.plasma6.enable = true;
 
+  imports = [
+    ./windowManager/plasma.nix
+  ];
   services.displayManager = {
     sddm.enable = true;
     sddm.wayland.enable = true;
