@@ -3,7 +3,7 @@
   nix.distributedBuilds = true;
   nix.extraOptions = ''
     builders-use-substitutes = true
-    connect-timeout = 5
+    connect-timeout = 1
     fallback = true
   '';
   nix.buildMachines = [{
