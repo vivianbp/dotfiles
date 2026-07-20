@@ -499,7 +499,7 @@ binds {
     Mod+T hotkey-overlay-title="Open a Terminal: kitty" { spawn "kitty"; }
     Mod+D hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
     // Mod+Space hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
-    Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
+    Super+Alt+L hotkey-overlay-title="Lock the Screen" { spawn "noctalia-shell" "ipc" "call" "lockScreen" "lock"; }
 
     // Use spawn-sh to run a shell command. Do this if you need pipes, multiple commands, etc.
     // Note: the entire command goes as a single argument. It's passed verbatim to `sh -c`.
@@ -753,15 +753,15 @@ binds {
     Mod+Ctrl+Escape hotkey-overlay-title="Xkill" { spawn-sh "$HOME/.config/niri/scripts/niri-force-kill-window" ; }
 
     //noctalia binds
-    Mod+Space hotkey-overlay-title="Run an Application: noctalia" { spawn-sh "noctalia-shell ipc call launcher toggle"; }
-    Mod+S     hotkey-overlay-title="Open noctalia control center" { spawn-sh "noctalia-shell ipc call controlCenter toggle"; }
+    Mod+Space hotkey-overlay-title="Run an Application: noctalia" { spawn "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
+    Mod+S     hotkey-overlay-title="Open noctalia control center" { spawn "noctalia-shell" "ipc" "call" "controlCenter" "toggle"; }
     // Mod+Comma hotkey-overlay-title="Open noctalia settings" { spawn-sh "qs -c noctalia-shell ipc call settings toggle"; }
 
     // Audio & Brightness
-    XF86AudioRaiseVolume allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "volume" "increase"; }
-    XF86AudioLowerVolume allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "volume" "decrease"; }
-    XF86AudioMute allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "volume" "muteOutput"; }
-    XF86MonBrightnessUp allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "brightness" "increase"; }
+    XF86AudioRaiseVolume allow-when-locked=true  { spawn "noctalia-shell" "ipc" "call" "volume" "increase"; }
+    XF86AudioLowerVolume allow-when-locked=true  { spawn "noctalia-shell" "ipc" "call" "volume" "decrease"; }
+    XF86AudioMute allow-when-locked=true         { spawn "noctalia-shell" "ipc" "call" "volume" "muteOutput"; }
+    XF86MonBrightnessUp allow-when-locked=true   { spawn "noctalia-shell" "ipc" "call" "brightness" "increase"; }
     XF86MonBrightnessDown allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "brightness" "decrease"; }
 
 }
