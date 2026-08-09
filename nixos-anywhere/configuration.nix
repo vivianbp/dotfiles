@@ -27,18 +27,18 @@
     "flakes"
   ];
 
-  # hibernation stuff
-  boot.kernelParams = [
-    # "resume=/dev/mapper/nixos--vg-root"
-    "resume_offset=24887296"
-  ];
+  # # hibernation stuff
+  # boot.kernelParams = [
+  #   # "resume=/dev/mapper/nixos--vg-root"
+  #   "resume_offset=24887296"
+  # ];
   swapDevices = [
     {
       device = "/var/swapfile";
       size = 16 * 1024; # 16GB in MB
     }
   ];
-  boot.resumeDevice = "/dev/mapper/nixos--vg-root";
+  # boot.resumeDevice = "/dev/mapper/nixos--vg-root";
 
   xdg.portal.enable = true;
 
