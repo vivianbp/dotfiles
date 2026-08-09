@@ -86,7 +86,7 @@
           # catppuccin.nixosModules.catppuccin
           niri-flake.nixosModules.niri
           inputs.nix-index-database.nixosModules.nix-index
-          
+
         
 
           # ({ pkgs, ... }: {
