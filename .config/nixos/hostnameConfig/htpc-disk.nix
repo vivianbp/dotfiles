@@ -24,14 +24,14 @@
               mountpoint = "/boot";
             };
           };
-          recoverynix = {
-            name = "recovnix";
-            size = "20G";
-            content = {
-              type = "filesystem"; 
-              format = "ext4";
-            };
-          };
+          # recoverynix = {
+          #   name = "recovnix";
+          #   size = "20G";
+          #   content = {
+          #     type = "filesystem"; 
+          #     format = "ext4";
+          #   };
+          # };
           lvmpart = {
             name = "lvmpart";
             size = "100%";
