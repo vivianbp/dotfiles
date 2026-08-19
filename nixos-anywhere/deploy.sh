@@ -160,6 +160,7 @@ inConfigs && /^    };/ && !done {
   print "        specialArgs = { inherit inputs; };"
   print "        modules = ["
   print "          inputs.disko.nixosModules.disko"
+  print "          inputs.nix-index-database.nixosModules.nix-index"
   print "          ./hostnameConfig/'"${HOSTNAME}"'-config.nix"
   print "          ./configuration.nix"
   print "        ];"

@@ -38,7 +38,7 @@
 
   nix.settings = {
     substituters = [
-      "http://kerrigan:5000?priority=10"
+      "http://kerrigan:5000" # ?priority=10
       "https://cache.nixos.org"
       "https://nix-community.cachix.org"
       "https://niri.cachix.org"

@@ -1,87 +1,78 @@
 # nixos-anywhere flake
 
-This repository is a [Nix flake](flake.nix) with two complementary pieces:
+Personal NixOS configuration flake for reproducible system deployments. It builds a bootable installer ISO and deploys the real config to bare-metal/VM targets via [nixos-anywhere](https://github.com/nix-community/nixos-anywhere) + [disko](https://github.com/nix-community/disko), then hands off to a separate personal [dotfiles](https://github.com/violetbp/dotfiles) repo for the machine's actual day-to-day configuration.
 
-1. **Live USB image (`iso.nix`)** — Build bootable installation media you flash to a drive. It is a minimal NixOS installer CD plus local customizations (SSH, user, NetworkManager, extra tools, and Wi‑Fi helper options wired through [`network.nix`](network.nix)).
-2. **Installed system (`initialconfiguration.nix`)** — The configuration you deploy to the machine **after** it boots the live environment. Uses [nixos-anywhere](https://github.com/nix-community/nixos-anywhere) against a per-hostname output. Pulls in [disko](https://github.com/nix-community/disko) layout from [`disk-config.nix`](disk-config.nix), boot loaders, OpenSSH, your user, and [sops-nix](https://github.com/Mic92/sops-nix) for secret management.
+The two-phase idea:
 
-Boot from the USB, get on the network (Ethernet or the Wi‑Fi setup you define), then run `deploy.sh` to partition, format, install NixOS, and apply your real dotfiles config in one shot.
+1. **Boot the ISO** ([`iso.nix`](iso.nix)) on the target machine. It's a minimal installer with SSH, NetworkManager, and Wi‑Fi presets baked in.
+2. **Run `deploy.sh`** from this repo. It partitions/formats the disk, installs a minimal bootstrap NixOS config from this flake, then pulls down the real dotfiles config and switches to it — all in one shot.
 
 ## Inputs
 
 | Input | Purpose |
 |-------|---------|
-| `nixpkgs` | NixOS unstable channel |
+| `nixpkgs` | `nixpkgs-unstable` |
 | `disko` | Declarative disk partitioning |
-| `sops-nix` | Secret management via age/GPG |
-| `nixos-facter-modules` | Experimental hardware detection alternative |
+| `sops-nix` | Secret management via age (Wi‑Fi PSK, user password) |
+| `nixos-facter-modules` | Experimental hardware-detection alternative to `nixos-generate-config` |
 
-## Outputs (NixOS configurations)
+## Outputs (`nixosConfigurations`)
 
 | Attribute | Purpose |
 |-----------|---------|
-| `nixosConfigurations.<hostname>` | **Auto-generated** from files in [`hostnameconfig/`](hostnameconfig/) — one per machine. Created by `deploy.sh`. |
-| `nixosConfigurations.iso` | Minimal install CD + [`iso.nix`](iso.nix) — use this to **build the flashable ISO**. |
-| `nixosConfigurations.generic` | Legacy fallback with no hostname set. Use when you haven't created a hostnameconfig entry yet. |
-| `nixosConfigurations.recovery` | Alternate layout using `configurationrecover.nix`; for recovery-style installs. |
-| `nixosConfigurations.generic-nixos-facter` | Experimental: like generic but uses nixos-facter instead of `nixos-generate-config`. |
+| `<hostname>` | **Auto-generated** — one per `.nix` file in [`hostnameconfig/`](hostnameconfig/) (e.g. `kerrigan`, `talandar`). `deploy.sh` creates these automatically. |
+| `iso` | Minimal install CD + [`iso.nix`](iso.nix) — build this to get the flashable USB image. |
+| `generic` | Bootstrap config with no hostname set yet — a fallback target when you haven't created a `hostnameconfig/` entry. |
+| `generic-nixos-facter` | Experimental: like `generic`, but hardware is described via `nixos-facter`'s `facter.json` instead of `nixos-generate-config`. |
+| `recovery` | Alternate layout intended for recovery-style installs — **currently broken**, it imports `./configurationrecover.nix`, which doesn't exist in this repo yet. |
+
+Every hostname config (plus `generic`) shares `bootstrapModules`: `disko`, `sops-nix`, [`initialconfiguration.nix`](initialconfiguration.nix), and `hardware-configuration.nix`.
 
 ## Prerequisites
 
-Before running any deployment:
-
-- `secrets/secrets.yaml` must exist and be sops-encrypted with your age key.
-- `~/.config/sops/age/keys.txt` must contain your age private key.
-- `nixos-anywhere` must be on `PATH` (`nix shell github:nix-community/nixos-anywhere`).
-
-To generate an age key if you don't have one:
-
-```bash
-age-keygen -o ~/.config/sops/age/keys.txt
-```
+- `secrets/secrets.yaml` exists and is sops-encrypted (see [Secrets](#secrets) below).
+- `~/.config/sops/age/keys.txt` contains your age private key.
+- `nixos-anywhere` is on `PATH` (`nix shell github:nix-community/nixos-anywhere`).
 
 ## Build the USB image
-
-From the repository root:
 
 ```bash
 nix build .#nixosConfigurations.iso.config.system.build.isoImage
 ```
 
-The result is under `result/iso/`. Write it to a USB drive with your usual tool (`dd`, `cp` to the raw device, [Fedora Media Writer](https://github.com/FedoraQt/MediaWriter), etc.), then boot the target machine from that medium.
+Result is under `result/iso/` — write it to a USB drive (`dd`, Fedora Media Writer, etc.) and boot the target from it. Once booted, get it on the network (Ethernet, or one of the `networkPresets.wifiNetworks` baked into [`iso.nix`](iso.nix) — `nmtui` also works for anything else) and note its IP.
 
-On the live system, ensure SSH keys in [`iso.nix`](iso.nix) match the machine you connect from.
+## Deploy a new machine
 
-## Deploy a new machine (recommended)
-
-`deploy.sh` is the primary deployment script. It runs a two-phase process:
-
-1. **Bootstrap phase** — runs `nixos-anywhere` to partition, format, and install the base NixOS config (from this flake). Injects your age key so sops-nix can decrypt secrets on boot.
-2. **Dotfiles phase** — SSHes into the freshly booted machine, clones your dotfiles bare repo, places the hardware/disk configs, patches the dotfiles flake to add the new hostname, and runs `nixos-rebuild switch` to apply your real configuration.
+`deploy.sh` is the main entry point:
 
 ```bash
 ./deploy.sh <target-ip> <hostname>
 # Example: ./deploy.sh 192.168.1.50 kerrigan
 ```
 
-Options:
+It runs four phases:
 
-- `--skip-nixos-anywhere` — Skip phase 1 (bootstrap) and go straight to the dotfiles phase. Useful if the machine already has NixOS installed.
+1. **Bootstrap** — creates `hostnameconfig/<hostname>.nix` if missing, then runs `nixos-anywhere` to partition (disko), format, and install the bootstrap config from this flake. The age key is uploaded via `--extra-files` so sops-nix can decrypt secrets on first boot. After reboot, it fixes the EFI boot order so the internal disk boots before the installer USB.
+2. **Update dotfiles** — copies the freshly generated `hardware-configuration.nix` and `disk-config.nix` into the local dotfiles checkout (`~/.config/nixos`), creates a per-host wrapper module there, patches the dotfiles `flake.nix` to add a `nixosConfigurations.<hostname>` entry, and pushes the commit.
+3. **Apply real config** — SSHes in, clones the dotfiles bare repo to `~/.cfg`, and runs `nixos-rebuild switch --flake ~/.config/nixos#<hostname>` as a detached `systemd-run` unit (`nixos-apply`) so it survives the SSH/dbus restart mid-switch.
+4. **Follow logs** — tails `journalctl -u nixos-apply` on the target; Ctrl‑C is safe, the unit keeps running.
 
-`deploy.sh` will auto-create `hostnameconfig/<hostname>.nix` if it doesn't already exist. That file sets `networking.hostName` and gets picked up by the flake automatically.
+Flags:
 
-### deploy2.sh variant
+- `--skip-nixos-anywhere` — skip phase 1 and go straight to the dotfiles phase (for a machine that's already partitioned/installed). `deploy-failed.sh` is a shorthand for this — use it to resume after a first attempt fails partway through.
 
-`deploy2.sh` is identical to `deploy.sh` but runs the dotfiles phase as a detached `systemd` unit (`nixos-apply`) instead of an interactive SSH session. This lets you Ctrl-C from the log tail without aborting the setup — the job keeps running on the target.
+### push-dotfiles.sh
+
+After a fresh deploy, the target's dotfiles checkout points at the HTTPS remote (no auth needed to clone a public repo). Run this once you want to push changes back from the target:
 
 ```bash
-./deploy2.sh <target-ip> <hostname>
-# Follow logs (safe to Ctrl-C): journalctl -u nixos-apply on target
+./push-dotfiles.sh <target-ip>
 ```
 
-## Manual nixos-anywhere (without deploy.sh)
+Switches the `~/.cfg` remote to SSH and pushes `main`. Requires `ssh -A` agent forwarding so GitHub auth works without a key living on the target.
 
-If you want to run nixos-anywhere directly without the dotfiles phase:
+## Manual nixos-anywhere (without deploy.sh)
 
 ```bash
 nixos-anywhere --flake .#<hostname> \
@@ -89,7 +80,7 @@ nixos-anywhere --flake .#<hostname> \
   root@<target-ip>
 ```
 
-For the facter-based experimental configuration:
+Facter-based experimental variant:
 
 ```bash
 nixos-anywhere --flake .#generic-nixos-facter \
@@ -97,25 +88,29 @@ nixos-anywhere --flake .#generic-nixos-facter \
   root@<target-ip>
 ```
 
-## Per-hostname configs
+## Module reference
 
-The flake auto-generates a `nixosConfiguration` for every `.nix` file found in [`hostnameconfig/`](hostnameconfig/). Each file is minimal — typically just:
+**Deployable modules (wired into `flake.nix`):**
 
-```nix
-{ networking.hostName = "kerrigan"; }
-```
+- [`iso.nix`](iso.nix) — live installer: user/root SSH keys, OpenSSH, NetworkManager, `networkPresets.wifiNetworks`, binary cache substituters, install tooling. GUI apps were intentionally left out to keep the ISO small.
+- [`initialconfiguration.nix`](initialconfiguration.nix) — installed system base: disko + network imports, systemd-boot, sops-nix secrets (Wi‑Fi PSK templated into a `.nmconnection` file, hashed user password), OpenSSH with root login enabled (required for `nixos-anywhere` to connect), user account, SSH keys.
+- [`disk-config.nix`](disk-config.nix) — disko GPT layout on `/dev/sda`: BIOS boot stub → 500M EFI System Partition (`/boot`) → 20G recovery partition (unused by default) → LVM PV filling the rest. The `pool` volume group splits into `root` (50% of free space) and `home` (remaining free space), both ext4.
+- [`network.nix`](network.nix) — defines `networkPresets.wifiNetworks`, which writes NetworkManager `.nmconnection` files for predefined Wi‑Fi networks. Shared between the ISO and the installed system.
+- [`digitalocean.nix`](digitalocean.nix) — DigitalOcean target module (`digital-ocean-config.nix` + cloud-init datasource config). Not currently wired into a flake output — add it to a host's `modules` list when deploying to a droplet.
 
-All share the same `bootstrapModules` (disko, sops-nix, `initialconfiguration.nix`, `hardware-configuration.nix`). The `deploy.sh` script creates these files automatically.
-
-## What each module adds
-
-- **[`iso.nix`](iso.nix)** — Live environment: user and root SSH keys, OpenSSH, NetworkManager, `networkPresets.wifiNetworks` (see [`network.nix`](network.nix)), installer tooling.
-- **[`initialconfiguration.nix`](initialconfiguration.nix)** — Installed system base: imports disk layout, network profile, systemd-boot + EFI, OpenSSH (root login enabled for nixos-anywhere), NetworkManager, user account and groups, sops-nix age key path.
-- **[`disk-config.nix`](disk-config.nix)** — Disko GPT layout: EFI partition → LVM pool → root + home logical volumes.
-- **[`network.nix`](network.nix)** — NetworkManager with Wi-Fi preset support. Shared between ISO and installed system.
+**Personal laptop config (not part of this flake's outputs):** [`configuration.nix`](configuration.nix), [`programs.nix`](programs.nix), [`starship.nix`](starship.nix), [`laptop.nix`](laptop.nix), [`misc.nix`](misc.nix) — the day-to-day desktop/laptop config (hibernation, firewall, Bluetooth, PipeWire, Catppuccin theming, Zsh/Starship, package list). These live here for reference/reuse but are applied through the separate dotfiles flake during phase 3 of `deploy.sh`, not through `flake.nix` in this repo.
 
 ## Secrets
 
-Secrets are managed with [sops-nix](https://github.com/Mic92/sops-nix). The encrypted file lives at `secrets/secrets.yaml`. The age private key is injected into the target at `/var/lib/sops-nix/age-key.txt` during deployment via `--extra-files`.
+Managed with [sops-nix](https://github.com/Mic92/sops-nix); recipients are configured in [`.sops.yaml`](.sops.yaml).
 
-Before sharing or publishing the repo, replace placeholder secrets (Wi-Fi PSKs, SSH public keys) in `iso.nix`, `initialconfiguration.nix`, and related files with your own values. Do **not** commit unencrypted secrets.
+```bash
+age-keygen -o ~/.config/sops/age/keys.txt      # generate a key if you don't have one
+cp secrets/secrets.yaml.example secrets/secrets.yaml
+sops -e -i secrets/secrets.yaml                # encrypt in place
+sops secrets/secrets.yaml                      # edit later
+```
+
+`secrets.yaml` holds `ssh-authorized-key` and `wifi-psk`. During `nixos-anywhere` bootstrap, the age private key is uploaded to `/var/lib/sops-nix/age-key.txt` on the target so it can decrypt these at activation time.
+
+**Before sharing or publishing this repo**, replace the hardcoded SSH public keys in [`iso.nix`](iso.nix) and [`initialconfiguration.nix`](initialconfiguration.nix), the Wi‑Fi SSID/PSK preset in [`iso.nix`](iso.nix), and the binary-cache host/keys tied to `kerrigan`. Never commit `secrets/secrets.yaml` unencrypted.
