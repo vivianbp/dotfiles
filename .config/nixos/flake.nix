@@ -125,6 +125,8 @@
           ./hostnameConfig/kerrigan-config.nix
           ./configuration.nix
           ./htpc.nix
+          ./buildServer.nix
+          ./harmonia.nix
           # ./windowManager/niri.nix/
           ./nvidia.nix
           inputs.nix-index-database.nixosModules.nix-index
