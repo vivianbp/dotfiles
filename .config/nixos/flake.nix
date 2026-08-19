@@ -15,11 +15,15 @@
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";   
     };
+    winapps = {
+      url = "github:winapps-org/winapps";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
     # dgop = {
     #   url = "github:AvengeMedia/dgop";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
-    claude-desktop.url = "github:aaddrick/claude-desktop-debian";
+    # claude-desktop.url = "github:aaddrick/claude-desktop-debian";
 
     # dankMaterialShell = {
     #   url = "github:AvengeMedia/DankMaterialShell";
@@ -45,12 +49,12 @@
     # humble-manager.inputs.nixpkgs.follows = "nixpkgs";
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
-    plasma-bigscreen = {
-      url = "path:/home/vboysepe/projects/plasmabigscreen";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
+    # plasma-bigscreen = {
+    #   url = "path:/home/vboysepe/projects/plasmabigscreen";
+    #   inputs.nixpkgs.follows = "nixpkgs-unstable";
+    # };
   };
-  outputs = inputs@{ self, home-manager, claude-desktop, nixpkgs, niri-flake, ... }: 
+  outputs = inputs@{ self, home-manager, nixpkgs, niri-flake, ... }: 
   # dankMaterialShell , refind-mod, nix-index-database,
   {
     nixosConfigurations = {
@@ -77,18 +81,21 @@
           ./buildClient.nix
           ./desktop.nix
           ./laptop.nix
+          ./misc/thunderbolt.nix
           # refind-mod.nixosModules.refind
           # catppuccin.nixosModules.catppuccin
           niri-flake.nixosModules.niri
           inputs.nix-index-database.nixosModules.nix-index
-          
+
+        
+
           # ({ pkgs, ... }: {
           #   nixpkgs.overlays = [ claude-desktop.overlays.default ];
           #   environment.systemPackages = [ pkgs.claude-desktop ];
           # })
-          ({ ... }: {
-            environment.systemPackages = [ claude-desktop.packages.x86_64-linux.claude-desktop ];
-          })
+          # ({ ... }: {
+          #   environment.systemPackages = [ inputs.claude-desktop.packages.x86_64-linux.claude-desktop ];
+          # })
           home-manager.nixosModules.home-manager            
         ];
         specialArgs = { inherit inputs; };
@@ -108,9 +115,6 @@
           niri-flake.nixosModules.niri
           inputs.nix-index-database.nixosModules.nix-index
           
-          ({ ... }: {
-            environment.systemPackages = [ claude-desktop.packages.x86_64-linux.claude-desktop ];
-          })
           home-manager.nixosModules.home-manager 
         ];
         specialArgs = { inherit inputs; };
@@ -121,7 +125,6 @@
         specialArgs = { inherit inputs; };
         modules = [
           inputs.disko.nixosModules.disko
-          inputs.nix-index-database.nixosModules.nix-index
           ./hostnameConfig/kerrigan-config.nix
           ./configuration.nix
           ./htpc.nix
@@ -130,7 +133,6 @@
           # ./windowManager/niri.nix/
           ./nvidia.nix
           inputs.nix-index-database.nixosModules.nix-index
-          { programs.nix-index-database.comma.enable = true; }
         ];
       };
       talandar = nixpkgs.lib.nixosSystem {
@@ -144,9 +146,6 @@
           niri-flake.nixosModules.niri
           inputs.nix-index-database.nixosModules.nix-index
           
-          ({ ... }: {
-            environment.systemPackages = [ claude-desktop.packages.x86_64-linux.claude-desktop ];
-          })
           home-manager.nixosModules.home-manager 
           ./hostnameConfig/talandar-config.nix
           ./configuration.nix
@@ -154,6 +153,16 @@
           ./desktop.nix
         ];
         
+      };
+      htpc = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = { inherit inputs; };
+        modules = [
+          inputs.disko.nixosModules.disko
+          inputs.nix-index-database.nixosModules.nix-index
+          ./hostnameConfig/htpc-config.nix
+          ./configuration.nix
+        ];
       };
     };
   };

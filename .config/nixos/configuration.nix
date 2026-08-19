@@ -20,6 +20,8 @@
   ];
   # stdenv.hostPlatform.system = inputs.system;
 
+
+  
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
@@ -98,6 +100,12 @@
     enable = true;
     nssmdns4 = true;
     openFirewall = true;
+    publish = {
+      enable = true;
+      addresses = true;
+      domain = true;
+      workstation = true;
+    };
   };
   users.users.root.openssh.authorizedKeys.keys =  [
     # change this to your ssh key
