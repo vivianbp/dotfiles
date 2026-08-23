@@ -145,7 +145,7 @@
     pavucontrol # gui sound manager from pulseaudio
     vlc
     transmission_4-qt
-    plex-desktop
+    # plex-desktop
 
     ###### Web Browsers ######
     firefox
@@ -156,12 +156,12 @@
     signal-desktop
     slack
     zoom-us
-    p3x-onenote
 
     ###### Productivity / Office ######
     libreoffice
     obsidian
     anki
+    p3x-onenote
 
     ###### Gaming ######
     bolt-launcher # runescape
@@ -185,7 +185,7 @@
     nnn
 
     ###### Misc Utilities ######
-    arandr # gui diplay manager
+    # arandr # gui diplay manager not useful anymore
     brightnessctl
     inotify-tools
     hyfetch
@@ -204,7 +204,7 @@
     ###### Unstable Channel (pkgsUnstable) ######
     pkgsUnstable.telegram-desktop
     pkgsUnstable.pangolin-cli
-    pkgsUnstable.code-cursor
+    # pkgsUnstable.code-cursor
     pkgsUnstable.noctalia-shell
     # pkgsUnstable.esphome
     pkgsUnstable.opencode
