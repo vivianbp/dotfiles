@@ -46,7 +46,7 @@
       enable = true;
       # Certain features, including CLI integration and system authentication support,
       # require enabling PolKit integration on some desktop environments (e.g. Plasma).
-      polkitPolicyOwners = [ "yourUsernameHere" ];
+      polkitPolicyOwners = [ "vboysepe" ];
     };
 
   };
@@ -63,115 +63,145 @@
   ###### Mass Packages ######
 
   environment.systemPackages = with pkgs; [
-    kdePackages.plasma-workspace    
-    anki
+
+    ###### Development / CLI Tooling ######
     ansible
-    # inputs.humble-manager.packages.${pkgs.stdenv.system}.humble-manager
-    arandr # gui diplay manager
-    autoconf # make i think?
+    autoconf 
     automake
-    bashmount
     bat
-    brightnessctl
-    cliphist
     clang-tools
     coreutils-full
     claude-code
     claude-monitor
     dig
-    discord
-    dgop # another top replacement
     direnv
-    bolt-launcher # runescape
-    efibootmgr
-    emacs
-    feh # image viewer
-    firefox
     gcc
     git
     gjs
     glib
-    geeqie
-    google-chrome
-    gparted
-    gnome-disk-utility
-    ghostty
-    htop
-    fontforge-gtk
-    imagemagick
-    inotify-tools
     jdk17_headless
     jq
-    kdePackages.kate
-    kitty
     krb5
-    libreoffice
-    # lutris
-    maim # screenshots
-    nano
     nix-direnv
     nixd
-    nautilus
-    ncdu
-    nemo-with-extensions
-    nemo-preview
-    bluetui
-    bluez
-    hyfetch
-    neovim
-    nixos-anywhere
-    libnotify
-    kicad
-    networkmanagerapplet
     nix-prefetch-scripts
     nixfmt
-    nnn
-    ntfs3g
-    obsidian
-    openconnect
-    p3x-onenote
-    pamixer # volume
-    pavucontrol # gui sound manager from pulseaudio
-    playerctl
-    plex-desktop
-    pciutils
-    prismlauncher
+    nixos-anywhere
     python313
-    rsyslog
-    rquickshare
-    # rustup in dev shells
-    runelite # cuz i love my girlfriends
-    samba
+    sops
+    stow
+    tmux
     screen
     service-wrapper
-    signal-desktop
-    slack
-    sops
-    stow    
-    nixfmt
-    syslinux
-    tmux
-    transmission_4-qt
+    which
+    # node, esphome, rustup, etc in dev shells
+
+    ###### Editors ######
+    emacs
+    nano
+    neovim
+    vim
+    vscode
+    kdePackages.kate
+
+    ###### System Administration / Disk & Storage ######
+    bashmount
+    efibootmgr
+    gparted
+    gnome-disk-utility
+    ncdu
+    ntfs3g
+    samba
     udiskie
     udisks2
-    unzip
     usbutils
-    vim
-    vlc
-    vscode
+    pciutils
+    bluetui
+    bluez
+    dgop # another top replacement
+    htop
+    rsyslog
+
+    ###### Networking ######
+    networkmanagerapplet
+    openconnect
     wget
-    which
+    rquickshare
+
+    ###### File Management ######
+    nautilus
+    nemo-with-extensions
+    nemo-preview
+    geeqie
+    feh # image viewer
+    maim # screenshots
+
+    ###### Media / Graphics ######
+    imagemagick
+    fontforge-gtk
+    kicad
+    playerctl
+    pamixer # volume
+    pavucontrol # gui sound manager from pulseaudio
+    vlc
+    transmission_4-qt
+    plex-desktop
+
+    ###### Web Browsers ######
+    firefox
+    google-chrome
+
+    ###### Communication / Chat ######
+    discord
+    signal-desktop
+    slack
+    zoom-us
+    p3x-onenote
+
+    ###### Productivity / Office ######
+    libreoffice
+    obsidian
+    anki
+
+    ###### Gaming ######
+    bolt-launcher # runescape
+    prismlauncher
+    runelite # cuz i love my girlfriends
+    # lutris
+
+    ###### Clipboard / Notifications ######
+    cliphist
     wl-clipboard # wl-copy and wl-paste for copy/paste from stdin / stdout
     xclip
+    libnotify
     xprop
-    zip
-    zoom-us
+
+    ###### Terminals ######
+    ghostty
+    kitty
+
+    ###### Shell ######
     zsh
+    nnn
+
+    ###### Misc Utilities ######
+    arandr # gui diplay manager
+    brightnessctl
+    inotify-tools
+    hyfetch
+    unzip
+    zip
+    syslinux
+
+    ###### Disabled / Notes ######
+    # inputs.humble-manager.packages.${pkgs.stdenv.system}.humble-manager
     #  (import "./remctl.nix")
     #  nushell
     #  mlocate defined in service
     #  geticons    # CLI tool for locating icons
     #  (import (fetchTarball "channel:nixos-unstable") {}).polymc
+
+    ###### Unstable Channel (pkgsUnstable) ######
     pkgsUnstable.telegram-desktop
     pkgsUnstable.pangolin-cli
     pkgsUnstable.code-cursor
