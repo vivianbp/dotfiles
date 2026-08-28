@@ -3,6 +3,7 @@
   imports = [
     ../hardwareConfig/kerrigan-hw.nix
     ../hardwareConfig/kerrigan-disk.nix
+    ../misc/zfs.nix
   ];
 
   networking.hostName = "kerrigan";
