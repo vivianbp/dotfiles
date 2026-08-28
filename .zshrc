@@ -93,6 +93,8 @@ chpwd() {
   fc -p "$HISTFILE"
 }
 
+export PATH=/home/vboysepe/.local/bin:$PATH
+
 
 
 if [ "$PWD" = "$HOME/.config/nixos" ]; then

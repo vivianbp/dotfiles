@@ -149,6 +149,9 @@
       "dialout" #next two are for serial stuff
       "uucp"
       "ydotool"
+      "libvirt"
+      "kvm"
+      "input"
     ]; 
   };
   security.sudo.extraRules = [

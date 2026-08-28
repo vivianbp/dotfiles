@@ -71,8 +71,9 @@
     bat
     clang-tools
     coreutils-full
-    claude-code
+    pkgsUnstable.claude-code
     claude-monitor
+    curl
     dig
     direnv
     gcc
@@ -193,6 +194,17 @@
     zip
     syslinux
 
+    ###### Unsorted / Testing ######
+    orca-slicer
+    dialog 
+    freerdp 
+    iproute2 
+    libnotify
+    netcat
+    libvirt
+    inputs.winapps.packages."${system}".winapps
+    inputs.winapps.packages."${system}".winapps-launcher # optional
+
     ###### Disabled / Notes ######
     # inputs.humble-manager.packages.${pkgs.stdenv.system}.humble-manager
     #  (import "./remctl.nix")
@@ -209,7 +221,23 @@
     # pkgsUnstable.esphome
     pkgsUnstable.opencode
 
+    (pkgs.writeShellScriptBin "nixupgrade" ''
+      set -euo pipefail
+      cd /home/vboysepe/.config/nixos
+      lockfile="flake.lock"
+      if [ -f "$lockfile" ]; then
+        backup="''${lockfile}.bak.$(date +%Y-%m-%d_%H-%M-%S)"
+        cp "$lockfile" "lockfiles/$backup"
+        echo "Backed up flake.lock → $backup"
+      fi
+      nix flake update
+      sudo nixos-rebuild switch --flake ".#$(hostname)"
+    '')
+
   ];
+  programs.virt-manager.enable = true;
+  virtualisation.libvirtd.enable = true;
+
 
 
   fonts.packages = with pkgs; [
