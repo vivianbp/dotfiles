@@ -158,6 +158,8 @@
           inputs.nix-index-database.nixosModules.nix-index
           ./hostnameConfig/htpc-config.nix
           ./configuration.nix
+          ./htpc.nix
+
         ];
       };
     };

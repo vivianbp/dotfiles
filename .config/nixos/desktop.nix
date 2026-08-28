@@ -1,5 +1,8 @@
 { pkgs, ... }:
 {
+  imports = [
+    ./printers.nix
+  ];
   xdg.portal.enable = true;
 
   security.rtkit.enable = true;
