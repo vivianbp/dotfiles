@@ -49,10 +49,6 @@
     # humble-manager.inputs.nixpkgs.follows = "nixpkgs";
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
-    # plasma-bigscreen = {
-    #   url = "path:/home/vboysepe/projects/plasmabigscreen";
-    #   inputs.nixpkgs.follows = "nixpkgs-unstable";
-    # };
   };
   outputs = inputs@{ self, home-manager, nixpkgs, niri-flake, ... }: 
   # dankMaterialShell , refind-mod, nix-index-database,

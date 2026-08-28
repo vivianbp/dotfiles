@@ -1,17 +1,14 @@
 { config, lib, pkgs, inputs, ... }:
-let
-  plasmaBigscreenPkg = inputs.plasma-bigscreen.packages.x86_64-linux.plasma-bigscreen;
-in
 {
   # services.desktopManager.plasma6.enable = true;
 
   imports = [
     ./windowManager/plasma.nix
+    ./misc/plasmaBigscreen.nix
   ];
   services.displayManager = {
     sddm.enable = true;
     sddm.wayland.enable = true;
-    sessionPackages = [ plasmaBigscreenPkg ];
   };
   programs.ydotool.enable = true;
 
@@ -20,7 +17,7 @@ in
     let
       firefoxExe = lib.getExe pkgs.firefox;
       mkKiosk =
-        name: url:
+        name: url: 
         pkgs.writeShellScriptBin name ''
           export XDG_RUNTIME_DIR=/run/user/$(id -u)
           export WAYLAND_DISPLAY=wayland-0
@@ -29,7 +26,6 @@ in
         '';
     in
     [
-      plasmaBigscreenPkg
       pkgs.kdePackages.plasma-workspace  # provides startplasma-wayland for the bigscreen session
       (pkgs.writeShellScriptBin "launch-mlb" ''
         qdbus org.kde.Solid.PowerManagement /org/kde/Solid/PowerManagement org.kde.Solid.PowerManagement.wakeup
