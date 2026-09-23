@@ -1,7 +1,6 @@
 .android
 .bundle
-.cache
-.cfg
+
 
 .config (another copy)
 .config (copy)
@@ -9,3 +8,66 @@
 .config/nixos/flake.lock
 
 
+# The bare repo itself
+.cfg/
+
+# Caches and build artifacts
+.cache/
+.zcompdump
+.zcompdump-*
+.zcompdump-*.zwc
+.nix-defexpr/
+.nix-profile
+
+# Shell history & session state
+.zsh_history
+.z
+
+# Claude session data
+.claude/
+.claude.json
+
+# SSH private keys (only public keys should be tracked)
+.ssh/id_*
+.ssh/ans
+.ssh/git_rsa
+.ssh/bitbucket_rsa
+!.ssh/*.pub
+!.ssh/config
+
+# Browser profiles (large, ephemeral, privacy-sensitive)
+.config/1Password/
+.config/BraveSoftware/
+.config/chromium/
+.config/Code/
+.config/google-chrome/
+.config/google-chrome-beta/
+.config/google-chrome-unstable/
+.config/microsoft-edge-dev/
+.config/mozilla/
+.config/vivaldi/
+.config/vivaldi-snapshot/
+.mozilla/
+
+# App state / runtime dirs
+.local/
+.pki/
+.dotnet/
+.vscode/
+.config/dconf/
+.config/procps/
+.config/pulse/
+.config/nautilus/
+.config/telegram-desktop/
+
+# Nix-store-managed symlinks and home-manager artifacts
+.Xresources
+.config/mimeapps.list
+.config/environment.d/
+
+# Icon themes (installed packages, not dotfiles)
+.icons/
+
+# Downloads and temp dirs
+Downloads/
+nixos-anywhere/
