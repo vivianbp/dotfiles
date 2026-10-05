@@ -53,4 +53,22 @@
   #   };
   # };
 
+  # services.xserver.libinput = {
+  #   # clickMethod = "buttonareas";
+  #   # disableWhileTyping = true;
+  #   enable = true;
+  #   # middleEmulation = true;
+  #   tapping = true;
+
+  #   additionalOptions = ''
+  #     Option "PalmDetection" "on"
+  #     Option "TappingButtonMap" "lmr"
+  #   '';
+  # };
+
+  #libinput option is only for xserver?
+  services.udev.extraHwdb = ''
+  evdev:name:*:*
+    LIBINPUT_ATTR_TAP_BUTTON_MAP=btn-lmr
+'';
 }
