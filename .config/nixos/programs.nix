@@ -122,6 +122,7 @@
     dgop # another top replacement
     htop
     rsyslog
+    ddcutil
 
     ###### Networking ######
     networkmanagerapplet
@@ -146,6 +147,7 @@
     pavucontrol # gui sound manager from pulseaudio
     vlc
     transmission_4-qt
+    cider-2
     # plex-desktop
 
     ###### Web Browsers ######
@@ -217,7 +219,6 @@
     pkgsUnstable.telegram-desktop
     pkgsUnstable.pangolin-cli
     # pkgsUnstable.code-cursor
-    pkgsUnstable.noctalia-shell
     # pkgsUnstable.esphome
     pkgsUnstable.opencode
 

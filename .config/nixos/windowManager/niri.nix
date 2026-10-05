@@ -1,7 +1,7 @@
 #### NIRI + ####
 {
   pkgs,
-  lib,
+  # lib,
   inputs,
   ...
 }:
@@ -11,6 +11,8 @@
     pathsToLink = [ "/libexec" ];
     sessionVariables.NIXOS_OZONE_WL = "1"; # Apply Wayland flags to Electron apps where necessary
   };
+
+
 
   programs = {
     niri.enable = true;
@@ -32,8 +34,11 @@
     yaru-theme
     swaybg
     # mako
-    #betterlockscreen #prettyier might be nice
+    noctalia
+    noctalia-greeter
   ];
+
+  hardware.i2c.enable = true;
 
   # this is needed for the application icons to load in. if theres an issue in the future I probably need a local to my user path set up or smth
   systemd.user.services.waybar.serviceConfig = {
