@@ -152,6 +152,7 @@
       "kvm"
       "input"
       "i2c"
+      "docker"
     ]; 
   };
   security.sudo.extraRules = [

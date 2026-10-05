@@ -8,6 +8,8 @@
 
   networking.hostName = "kerrigan";
 
+  virtualisation.docker.enable = true;
+
   nix.settings.tarball-ttl = 86400; # cache flake inputs for 24h; prevents nix develop from hitting network on every remote build invocation
   
   
