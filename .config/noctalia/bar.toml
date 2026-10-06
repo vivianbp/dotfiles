@@ -1,0 +1,12 @@
+
+config_version = 14
+
+[bar.default]
+border = "on_primary"
+border_width = 2.0
+margin_ends = 1
+position = "left"
+
+[widget.clock]
+format = "%I:%M %p"
+tooltip_format = "{:%H:%M\\n%m/%d/%Y}"
