@@ -1,11 +1,11 @@
 ##
 ## WinApps host: Windows 11 in a dockur/windows container, reached over RDP from the LAN
-## Password comes from sops (secrets/winapps.yaml, key winapps-password), decrypted with the host ssh key
+## Password comes from sops (../secrets/winapps.yaml, key winapps-password), decrypted with the host ssh key
 ##
 
 { config, inputs, ... }:
 {
-  sops.defaultSopsFile = ./secrets/winapps.yaml;
+  sops.defaultSopsFile = ../secrets/winapps.yaml;
   sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
   sops.secrets.winapps-password = { };
   sops.templates."winapps.env".content = ''
