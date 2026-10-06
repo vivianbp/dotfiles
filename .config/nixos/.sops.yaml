@@ -1,0 +1,10 @@
+keys:
+  - &user age1m3ljd929cqwwzz89a5psgaggyr9g5m3kv8wrv2wptdsxpadfte4sy0nnj4 # ~/.config/sops/age/keys.txt
+  - &kerrigan age14057fqydtqgsnpdcgqrutlqd8a0ppn3cayvj9twuzwdpvrsh4qdqtsmdw2 # ssh-to-age < kerrigan:/etc/ssh/ssh_host_ed25519_key.pub
+
+creation_rules:
+  - path_regex: secrets/winapps\.yaml$
+    key_groups:
+      - age:
+          - *user
+          - *kerrigan

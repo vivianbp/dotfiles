@@ -117,7 +117,7 @@
           ./buildServer.nix
           ./harmonia.nix
           inputs.sops-nix.nixosModules.sops
-          ./winapps-host.nix
+          ./misc/winapps-host.nix
           # ./windowManager/niri.nix/
           ./nvidia.nix
           inputs.nix-index-database.nixosModules.nix-index
