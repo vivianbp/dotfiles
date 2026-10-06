@@ -206,6 +206,10 @@
     libvirt
     inputs.winapps.packages."${system}".winapps
     inputs.winapps.packages."${system}".winapps-launcher # optional
+    # RDP_ASKPASS for winapps: password lives in sops (see winapps-host.nix)
+    (pkgs.writeShellScriptBin "winapps-askpass" ''
+      exec ${pkgs.sops}/bin/sops -d --extract '["winapps-password"]' /home/vboysepe/.config/nixos/secrets/winapps.yaml
+    '')
 
     ###### Disabled / Notes ######
     # inputs.humble-manager.packages.${pkgs.stdenv.system}.humble-manager
