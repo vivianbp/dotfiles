@@ -25,30 +25,20 @@
     # };
     # claude-desktop.url = "github:aaddrick/claude-desktop-debian";
 
-    # dankMaterialShell = {
-    #   url = "github:AvengeMedia/DankMaterialShell";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    #   inputs.dgop.follows = "dgop";
-    # };
     flake-schemas.url = "github:DeterminateSystems/flake-schemas";
-    # waybar.url        = "github:Nitepone/Waybar?ref=dev/niri-taskbar";
     # catppuccin.url    = "github:catppuccin/nix/release-25.05";
     niri-flake.url    = "github:sodiboo/niri-flake";
     # refind-mod.url    = "github:GrandtheUK/refind-nix";
-    # noctalia = {
-    #   url = "github:noctalia-dev/noctalia-shell";
-    #   inputs.nixpkgs.follows = "nixpkgs-unstable";
-    #   inputs.noctalia-qs.follows = "noctalia-qs";
-    # };
-
-    # noctalia-qs = { 
-    #   url = "github:noctalia-dev/noctalia-qs";
-    #   inputs.nixpkgs.follows = "nixpkgs-unstable";
-    # };
+    noctalia-greeter = {
+      url = "github:noctalia-dev/noctalia-greeter";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # humble-manager.url = "github:violetbp/humble-manager";
     # humble-manager.inputs.nixpkgs.follows = "nixpkgs";
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
+    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
   outputs = inputs@{ self, home-manager, nixpkgs, niri-flake, ... }: 
   # dankMaterialShell , refind-mod, nix-index-database,
@@ -82,7 +72,7 @@
           # catppuccin.nixosModules.catppuccin
           niri-flake.nixosModules.niri
           inputs.nix-index-database.nixosModules.nix-index
-
+          inputs.noctalia-greeter.nixosModules.default
         
 
           # ({ pkgs, ... }: {
@@ -110,7 +100,7 @@
           inputs.disko.nixosModules.disko
           niri-flake.nixosModules.niri
           inputs.nix-index-database.nixosModules.nix-index
-          
+          inputs.noctalia-greeter.nixosModules.default
           home-manager.nixosModules.home-manager 
         ];
         specialArgs = { inherit inputs; };
@@ -126,6 +116,8 @@
           ./htpc.nix
           ./buildServer.nix
           ./harmonia.nix
+          inputs.sops-nix.nixosModules.sops
+          ./winapps-host.nix
           # ./windowManager/niri.nix/
           ./nvidia.nix
           inputs.nix-index-database.nixosModules.nix-index
@@ -141,7 +133,7 @@
           inputs.disko.nixosModules.disko
           niri-flake.nixosModules.niri
           inputs.nix-index-database.nixosModules.nix-index
-          
+          inputs.noctalia-greeter.nixosModules.default
           home-manager.nixosModules.home-manager 
           ./hostnameConfig/talandar-config.nix
           ./configuration.nix

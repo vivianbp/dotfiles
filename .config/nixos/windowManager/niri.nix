@@ -1,7 +1,8 @@
 #### NIRI + ####
 {
+  config,
   pkgs,
-  # lib,
+  lib,
   inputs,
   ...
 }:
@@ -13,21 +14,15 @@
   };
 
 
-
   programs = {
     niri.enable = true;
     niri.package = inputs.niri-flake.packages.${pkgs.system}.niri-unstable;
-    # waybar.enable = true;
-    # waybar.package = "github:Nitepone/Waybar?ref=dev/niri-taskbar";
     dconf.enable = true;
   };
-  # nixpkgs.overlays = [ inputs.niri-flake.overlays.niri ];
-  # programs.niri.package = pkgs.niri-unstable;
+
   environment.systemPackages = with pkgs; [
-    # inputs.waybar.packages.${pkgs.system}.default
     xdg-desktop-portal-gtk
     fuzzel
-    # swaylock
     wayland-utils
     xwayland-satellite
     adwaita-icon-theme
@@ -56,19 +51,30 @@
     TTYVTDisallocate = true;
   };
 
+
+  
+
   services = {
-    
+    displayManager.noctalia-greeter = {
+      enable = true;
+      settings = {
+        cursor.size = 24;
+        keyboard.layout = "us";
+        cursor = {
+          package = pkgs.bibata-cursors;
+          name = "Bibata-Modern-Ice";
+        };
+      };
+      
+    };
+
+
     greetd = {
       enable = true;
       settings = {
-        # services.displayManager.defaultSession = "steam-gamescope";
-
-        default_session = {
-          command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.niri}/bin/niri-session";
-          user = "greeter";
-        };
-        initial_session = { # autologin with full disc encryption is based
-          command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.niri}/bin/niri-session";
+        # autologin only when the disk is encrypted (the LUKS passphrase is the real login)
+        initial_session = lib.mkIf (config.boot.initrd.luks.devices != { }) {
+          command = "${config.programs.niri.package}/bin/niri-session";
           user = "vboysepe";
         };
       };
