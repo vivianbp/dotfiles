@@ -71,3 +71,4 @@
 # Downloads and temp dirs
 Downloads/
 nixos-anywhere/
+.config/sops/age/keys.txt
