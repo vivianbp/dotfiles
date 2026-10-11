@@ -82,7 +82,7 @@
           # ({ ... }: {
           #   environment.systemPackages = [ inputs.claude-desktop.packages.x86_64-linux.claude-desktop ];
           # })
-          home-manager.nixosModules.home-manager            
+          ./homemanager
         ];
         specialArgs = { inherit inputs; };
       
@@ -101,7 +101,7 @@
           niri-flake.nixosModules.niri
           inputs.nix-index-database.nixosModules.nix-index
           inputs.noctalia-greeter.nixosModules.default
-          home-manager.nixosModules.home-manager 
+          ./homemanager
         ];
         specialArgs = { inherit inputs; };
 
@@ -118,6 +118,7 @@
           ./harmonia.nix
           inputs.sops-nix.nixosModules.sops
           ./misc/winapps-host.nix
+          ./misc/gpu-passthrough.nix
           # ./windowManager/niri.nix/
           ./nvidia.nix
           inputs.nix-index-database.nixosModules.nix-index
@@ -134,7 +135,7 @@
           niri-flake.nixosModules.niri
           inputs.nix-index-database.nixosModules.nix-index
           inputs.noctalia-greeter.nixosModules.default
-          home-manager.nixosModules.home-manager 
+          ./homemanager
           ./hostnameConfig/talandar-config.nix
           ./configuration.nix
           ./laptop.nix
@@ -152,6 +153,16 @@
           ./configuration.nix
           ./htpc.nix
 
+        ];
+      };
+      amdroidtv = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = { inherit inputs; };
+        modules = [
+          inputs.disko.nixosModules.disko
+          inputs.nix-index-database.nixosModules.nix-index
+          ./hostnameConfig/amdroidtv-config.nix
+          ./configuration.nix
         ];
       };
     };
