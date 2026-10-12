@@ -1,13 +1,14 @@
 { pkgs, ... }:
 
 {
-  programs.kdeconnect.enable = true;
-
+  # Enable the Plasma 5 Desktop Environment.
   services = {
     desktopManager.plasma6.enable = true;
     displayManager.sddm.enable = true;
     displayManager.sddm.wayland.enable = true;
   };
+  programs.kdeconnect.enable = true;
+
 
   environment.systemPackages = with pkgs; [
     # KDE Utilities

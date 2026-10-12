@@ -92,3 +92,14 @@ chpwd() {
   HISTFILE="$HOME/.zsh_history"
   fc -p "$HISTFILE"
 }
+
+export PATH=/home/vboysepe/.local/bin:$PATH
+
+
+
+if [ "$PWD" = "$HOME/.config/nixos" ]; then
+    export GIT_DIR="$HOME/.cfg"
+    export GIT_WORK_TREE="$HOME"
+fi
+export ZSHRC=yes
+# echo "Welcome to $(hostname)!"

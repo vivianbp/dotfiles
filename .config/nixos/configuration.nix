@@ -88,11 +88,10 @@
     extraHosts = ''
       # 10.147.19.1   orlana
       # 10.147.19.164 nova
-      10.0.0.215      plex
-      10.241.172.176  artemis
+      10.0.0.215      artemishome
       10.0.0.3        orlanahome
       10.0.0.7        haos
-      10.0.1.177      kerrigan
+      10.0.1.177      kerriganhome
     '';
 
   };
@@ -149,6 +148,11 @@
       "dialout" #next two are for serial stuff
       "uucp"
       "ydotool"
+      "libvirt"
+      "kvm"
+      "input"
+      "i2c"
+      "docker"
     ]; 
   };
   security.sudo.extraRules = [

@@ -54,7 +54,7 @@ Each host config in `hostnameConfig/` imports a subset of:
 - `../configuration.nix` — shared base
 - `../hardwareConfig/<host>-hw.nix` — generated hardware config
 - `../buildClient.nix` — enables distributed builds to kerrigan
-- `../buildServer2.nix` — kerrigan only; exposes nix SSH serve
+- `../buildServer.nix` — kerrigan only; exposes nix SSH serve
 
 `configuration.nix` further imports `programs.nix`, `starship.nix`, `laptop.nix`, `misc.nix`, `printers.nix`.
 

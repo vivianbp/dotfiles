@@ -24,10 +24,13 @@
     # trimmed irrelevant ones
     "thinkpad_acpi"
   ];
+  services.ratbagd.enable = true;
+  
   # virtualisation.virtualbox.host.enable = false;
   # users.extraGroups.vboxusers.members = [ "vboysepe" ];
   # virtualisation.virtualbox.host.enableExtensionPack = true;
   system.stateVersion = "21.11";
-
+  hardware.logitech.wireless.enable = true;
+  hardware.logitech.wireless.enableGraphical = true;
 
 }

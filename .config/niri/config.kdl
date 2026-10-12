@@ -17,9 +17,9 @@ input {
             // options "grp:win_space_toggle,compose:ralt,ctrl:nocaps"
 
             // Win is mapped to PrtSc and the usual Win
-            // compose is prtsc + alt 
-            // caps lock is control 
-            options "altwin:prtsc_rwin,compose:102,ctrl:nocaps"
+            // compose is prtsc + alt
+            // caps lock is an additional Super/Win (mod) key
+            options "altwin:prtsc_rwin,compose:102,caps:super"
             // If this section is empty, niri will fetch xkb settings
             // from org.freedesktop.locale1. You can control these using
             // localectl set-x11-keymap.
@@ -131,9 +131,27 @@ output "HP Inc. HP E243i CNK7461MHV" {
 
 output "PNP(BNQ) BenQ PD2700U ETT3L03210SL0" {
     scale 1.5
-    position x=0 y=-1440
+    position x=-2560 y=0
 
 }
+
+
+// HD	    ≈16:9	1360	768	    1.044	1.55	1.38
+// HD	    ≈16:9	1366	768	    1.049	10.22	23.26
+// WXGA+	16:10	1440	900	    1.296	3.12	6.98
+// HD+	    16:9	1600	900	    1.440	2.59	4.14
+// UXGA	    4:3	    1600	1200	1.920	N/A	    N/A
+// WSXGA+	16:10	1680	1050	1.764	1.97	2.23
+// FHD	    16:9	1920	1080	2.074	64.81	20.41
+// WUXGA	16:10	1920	1200	2.304	0.81	0.93
+// UWFHD	≈21:9	2560	1080	2.765	1.13	N/A
+// QHD	    16:9	2560	1440	3.686	6.23	2.15
+// WQXGA	16:10	2560	1600	4.096	<0.58	<2.4
+// UWQHD	≈21:9	3440	1440	4.954	0.87	N/A
+// 4K UHD	16:9	3840	2160	8.294	2.12	N/A
+// Other					2.00	15.09
+
+
 // Settings that influence how windows are positioned and sized.
 // Find more information on the wiki:
 // https://yalter.github.io/niri/Configuration:-Layout
@@ -298,7 +316,6 @@ prefer-no-csd
 
 // spawn-at-startup "alacritty" "-e" "fish"
 // spawn-at-startup "xwayland-satellite" "-verbose"
-spawn-at-startup "noctalia-shell"
 spawn-at-startup "Telegram"
 
 spawn-at-startup "wl-paste" "--watch" "cliphist" "store"
@@ -320,11 +337,6 @@ hotkey-overlay {
     skip-at-startup
 }
 
-
-debug {
-  // Allows notification actions and window activation from Noctalia.
-  honor-xdg-activation-with-invalid-serial
-}
 
 // Uncomment this line to ask the clients to omit their client-side decorations if possible.
 // If the client will specifically ask for CSD, the request will be honored.
@@ -403,8 +415,6 @@ window-rule {
 // Open the Zen picture-in-picture player as floating by default.
 window-rule {
     // This app-id regular expression will work for both:
-    // - host Firefox (app-id is "firefox")
-    // - Flatpak Firefox (app-id is "org.mozilla.firefox")
     match app-id=r#"^app\.zen_browser\.zen$"# title="^Picture-in-Picture$"
     open-floating true
 }
@@ -499,26 +509,13 @@ binds {
     Mod+T hotkey-overlay-title="Open a Terminal: kitty" { spawn "kitty"; }
     Mod+D hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
     // Mod+Space hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
-    Super+Alt+L hotkey-overlay-title="Lock the Screen" { spawn "noctalia-shell" "ipc" "call" "lockScreen" "lock"; }
 
     // Use spawn-sh to run a shell command. Do this if you need pipes, multiple commands, etc.
     // Note: the entire command goes as a single argument. It's passed verbatim to `sh -c`.
     // For example, this is a standard bind to toggle the screen reader (orca).
-    Super+Alt+S allow-when-locked=true hotkey-overlay-title=null { spawn-sh "pkill orca || exec orca"; }
+    // Super+Alt+S allow-when-locked=true hotkey-overlay-title=null { spawn-sh "pkill orca || exec orca"; }
 
-    // Example volume keys mappings for PipeWire & WirePlumber.
-    // The allow-when-locked=true property makes them work even when the session is locked.
-    // Using spawn-sh allows to pass multiple arguments together with the command.
-    // XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+"; }
-    // XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-"; }
-    // XF86AudioMute        allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
-    // XF86AudioMicMute     allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
-
-    // Example brightness key mappings for brightnessctl.
-    // You can use regular spawn with multiple arguments too (to avoid going through "sh"),
-    // but you need to manually put each argument in separate "" quotes.
-    // XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
-    // XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
+    // Noctalia binds live in noctalia-settings.kdl.
 
     // Open/close the Overview: a zoomed-out view of workspaces and windows.
     // You can also move the mouse into the top-left hot corner,
@@ -752,18 +749,6 @@ binds {
 
     Mod+Ctrl+Escape hotkey-overlay-title="Xkill" { spawn-sh "$HOME/.config/niri/scripts/niri-force-kill-window" ; }
 
-    //noctalia binds
-    Mod+Space hotkey-overlay-title="Run an Application: noctalia" { spawn "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
-    Mod+S     hotkey-overlay-title="Open noctalia control center" { spawn "noctalia-shell" "ipc" "call" "controlCenter" "toggle"; }
-    // Mod+Comma hotkey-overlay-title="Open noctalia settings" { spawn-sh "qs -c noctalia-shell ipc call settings toggle"; }
-
-    // Audio & Brightness
-    XF86AudioRaiseVolume allow-when-locked=true  { spawn "noctalia-shell" "ipc" "call" "volume" "increase"; }
-    XF86AudioLowerVolume allow-when-locked=true  { spawn "noctalia-shell" "ipc" "call" "volume" "decrease"; }
-    XF86AudioMute allow-when-locked=true         { spawn "noctalia-shell" "ipc" "call" "volume" "muteOutput"; }
-    XF86MonBrightnessUp allow-when-locked=true   { spawn "noctalia-shell" "ipc" "call" "brightness" "increase"; }
-    XF86MonBrightnessDown allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "brightness" "decrease"; }
-
 }
 workspace "chat" {
     // always open on 4k
@@ -783,8 +768,8 @@ window-rule {
     // - host Firefox (app-id is "firefox")
     // - Flatpak Firefox (app-id is "org.mozilla.firefox")
     match app-id=r#"firefox$"#
-    open-floating true
 }
+
 window-rule {
     match title="^PCB Editor$"
     match title="^Schematic Editor$"
@@ -792,9 +777,9 @@ window-rule {
 
     default-column-width { proportion 1.0; }
 }
-window-rule {
-    default-column-width { proportion 1.0; }
-}
+// window-rule {
+//     default-column-width { proportion 1.0; }
+// }
 window-rule {
     match at-startup=true app-id=r#"^app\.zen_browser\.zen$"#
          
@@ -827,9 +812,6 @@ environment {
 	MOZ_ENABLE_WAYLAND "1"
 }
 
-include "./noctalia.kdl"
-
-
 
 recent-windows {
     // off
@@ -861,3 +843,9 @@ recent-windows {
         Mod+Shift+grave { previous-window filter="app-id"; }
     }
 }
+
+
+// need to have at the end for overrides to work properly
+include "./noctalia.kdl"          // colors, generated by noctalia's theme template
+include "./noctalia-settings.kdl" // noctalia startup, binds, debug flag
+

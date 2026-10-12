@@ -25,34 +25,20 @@
     # };
     # claude-desktop.url = "github:aaddrick/claude-desktop-debian";
 
-    # dankMaterialShell = {
-    #   url = "github:AvengeMedia/DankMaterialShell";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    #   inputs.dgop.follows = "dgop";
-    # };
     flake-schemas.url = "github:DeterminateSystems/flake-schemas";
-    # waybar.url        = "github:Nitepone/Waybar?ref=dev/niri-taskbar";
     # catppuccin.url    = "github:catppuccin/nix/release-25.05";
     niri-flake.url    = "github:sodiboo/niri-flake";
     # refind-mod.url    = "github:GrandtheUK/refind-nix";
-    # noctalia = {
-    #   url = "github:noctalia-dev/noctalia-shell";
-    #   inputs.nixpkgs.follows = "nixpkgs-unstable";
-    #   inputs.noctalia-qs.follows = "noctalia-qs";
-    # };
-
-    # noctalia-qs = { 
-    #   url = "github:noctalia-dev/noctalia-qs";
-    #   inputs.nixpkgs.follows = "nixpkgs-unstable";
-    # };
+    noctalia-greeter = {
+      url = "github:noctalia-dev/noctalia-greeter";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # humble-manager.url = "github:violetbp/humble-manager";
     # humble-manager.inputs.nixpkgs.follows = "nixpkgs";
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
-    # plasma-bigscreen = {
-    #   url = "path:/home/vboysepe/projects/plasmabigscreen";
-    #   inputs.nixpkgs.follows = "nixpkgs-unstable";
-    # };
+    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
   outputs = inputs@{ self, home-manager, nixpkgs, niri-flake, ... }: 
   # dankMaterialShell , refind-mod, nix-index-database,
@@ -86,7 +72,7 @@
           # catppuccin.nixosModules.catppuccin
           niri-flake.nixosModules.niri
           inputs.nix-index-database.nixosModules.nix-index
-
+          inputs.noctalia-greeter.nixosModules.default
         
 
           # ({ pkgs, ... }: {
@@ -96,7 +82,7 @@
           # ({ ... }: {
           #   environment.systemPackages = [ inputs.claude-desktop.packages.x86_64-linux.claude-desktop ];
           # })
-          home-manager.nixosModules.home-manager            
+          ./homemanager
         ];
         specialArgs = { inherit inputs; };
       
@@ -114,8 +100,8 @@
           inputs.disko.nixosModules.disko
           niri-flake.nixosModules.niri
           inputs.nix-index-database.nixosModules.nix-index
-          
-          home-manager.nixosModules.home-manager 
+          inputs.noctalia-greeter.nixosModules.default
+          ./homemanager
         ];
         specialArgs = { inherit inputs; };
 
@@ -128,6 +114,11 @@
           ./hostnameConfig/kerrigan-config.nix
           ./configuration.nix
           ./htpc.nix
+          ./buildServer.nix
+          ./harmonia.nix
+          inputs.sops-nix.nixosModules.sops
+          ./misc/winapps-host.nix
+          ./misc/gpu-passthrough.nix
           # ./windowManager/niri.nix/
           ./nvidia.nix
           inputs.nix-index-database.nixosModules.nix-index
@@ -143,8 +134,8 @@
           inputs.disko.nixosModules.disko
           niri-flake.nixosModules.niri
           inputs.nix-index-database.nixosModules.nix-index
-          
-          home-manager.nixosModules.home-manager 
+          inputs.noctalia-greeter.nixosModules.default
+          ./homemanager
           ./hostnameConfig/talandar-config.nix
           ./configuration.nix
           ./laptop.nix
@@ -161,7 +152,18 @@
           ./hostnameConfig/htpc-config.nix
           ./configuration.nix
           ./htpc.nix
-          
+
+        ];
+      };
+      amdroidtv = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = { inherit inputs; };
+        modules = [
+          inputs.disko.nixosModules.disko
+          inputs.nix-index-database.nixosModules.nix-index
+          ./hostnameConfig/amdroidtv-config.nix
+          ./configuration.nix
+          ./htpc.nix
         ];
       };
     };

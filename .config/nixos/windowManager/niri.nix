@@ -1,5 +1,6 @@
 #### NIRI + ####
 {
+  config,
   pkgs,
   lib,
   inputs,
@@ -12,28 +13,27 @@
     sessionVariables.NIXOS_OZONE_WL = "1"; # Apply Wayland flags to Electron apps where necessary
   };
 
+
   programs = {
     niri.enable = true;
     niri.package = inputs.niri-flake.packages.${pkgs.system}.niri-unstable;
-    # waybar.enable = true;
-    # waybar.package = "github:Nitepone/Waybar?ref=dev/niri-taskbar";
     dconf.enable = true;
   };
-  # nixpkgs.overlays = [ inputs.niri-flake.overlays.niri ];
-  # programs.niri.package = pkgs.niri-unstable;
+
   environment.systemPackages = with pkgs; [
-    # inputs.waybar.packages.${pkgs.system}.default
     xdg-desktop-portal-gtk
     fuzzel
-    # swaylock
     wayland-utils
     xwayland-satellite
     adwaita-icon-theme
     yaru-theme
     swaybg
     # mako
-    #betterlockscreen #prettyier might be nice
+    noctalia
+    noctalia-greeter
   ];
+
+  hardware.i2c.enable = true;
 
   # this is needed for the application icons to load in. if theres an issue in the future I probably need a local to my user path set up or smth
   systemd.user.services.waybar.serviceConfig = {
@@ -51,19 +51,30 @@
     TTYVTDisallocate = true;
   };
 
+
+  
+
   services = {
-    
+    displayManager.noctalia-greeter = {
+      enable = true;
+      settings = {
+        cursor.size = 24;
+        keyboard.layout = "us";
+        cursor = {
+          package = pkgs.bibata-cursors;
+          name = "Bibata-Modern-Ice";
+        };
+      };
+      
+    };
+
+
     greetd = {
       enable = true;
       settings = {
-        # services.displayManager.defaultSession = "steam-gamescope";
-
-        default_session = {
-          command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.niri}/bin/niri-session";
-          user = "greeter";
-        };
-        initial_session = { # autologin with full disc encryption is based
-          command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.niri}/bin/niri-session";
+        # autologin only when the disk is encrypted (the LUKS passphrase is the real login)
+        initial_session = lib.mkIf (config.boot.initrd.luks.devices != { }) {
+          command = "${config.programs.niri.package}/bin/niri-session";
           user = "vboysepe";
         };
       };
