@@ -1,7 +1,7 @@
 { config, lib, pkgs, inputs, ... }:
-let
-  plasmaBigscreenPkg = inputs.plasma-bigscreen.packages.x86_64-linux.plasma-bigscreen;
-in
+# let
+#   plasmaBigscreenPkg = inputs.plasma-bigscreen.packages.x86_64-linux.plasma-bigscreen;
+# in
 {
   # services.desktopManager.plasma6.enable = true;
 
@@ -11,7 +11,7 @@ in
   services.displayManager = {
     sddm.enable = true;
     sddm.wayland.enable = true;
-    sessionPackages = [ plasmaBigscreenPkg ];
+    # sessionPackages = [ plasmaBigscreenPkg ];
   };
   programs.ydotool.enable = true;
 
@@ -29,8 +29,8 @@ in
         '';
     in
     [
-      plasmaBigscreenPkg
-      pkgs.kdePackages.plasma-workspace  # provides startplasma-wayland for the bigscreen session
+      # plasmaBigscreenPkg
+      # pkgs.kdePackages.plasma-workspace  # provides startplasma-wayland for the bigscreen session
       (pkgs.writeShellScriptBin "launch-mlb" ''
         qdbus org.kde.Solid.PowerManagement /org/kde/Solid/PowerManagement org.kde.Solid.PowerManagement.wakeup
         GAME_ID=$(${pkgs.curl}/bin/curl -sf \
