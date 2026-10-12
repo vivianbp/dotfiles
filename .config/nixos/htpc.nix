@@ -26,7 +26,6 @@
         '';
     in
     [
-      pkgs.kdePackages.plasma-workspace  # provides startplasma-wayland for the bigscreen session
       (pkgs.writeShellScriptBin "launch-mlb" ''
         qdbus org.kde.Solid.PowerManagement /org/kde/Solid/PowerManagement org.kde.Solid.PowerManagement.wakeup
         GAME_ID=$(${pkgs.curl}/bin/curl -sf \

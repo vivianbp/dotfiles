@@ -163,6 +163,7 @@
           inputs.nix-index-database.nixosModules.nix-index
           ./hostnameConfig/amdroidtv-config.nix
           ./configuration.nix
+          ./htpc.nix
         ];
       };
     };
