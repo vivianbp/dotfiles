@@ -1,0 +1,69 @@
+# Dim a monitor while Claude Code is busy.
+#
+# service  -> owns the enabled flag, busy sessions and brightness; Claude Code
+#             hooks talk to it over IPC:
+#             noctalia msg plugin vboysepe/claude-dim:service all busy|idle [session_id]
+# shortcut -> control-center tile: click toggles, right-click restores now
+# bar      -> status glyph: click toggles, right-click restores now
+
+id = "vboysepe/claude-dim"
+name = "Claude Dim"
+version = "1.0.0"
+plugin_api = 24
+author = "vboysepe"
+license = "MIT"
+dependencies = []
+tags = ["utility"]
+icon = "brightness-down"
+description = "Dim a monitor while Claude Code is working, restore it when Claude needs you."
+
+# Connector passed to `noctalia msg brightness-set`; empty = focused monitor.
+[[setting]]
+key = "monitor"
+type = "string"
+label_key = "settings.monitor.label"
+description_key = "settings.monitor.description"
+default = "DP-5"
+
+[[setting]]
+key = "dim_level"
+type = "int"
+label_key = "settings.dim_level.label"
+description_key = "settings.dim_level.description"
+default = 15
+min = 0
+max = 100
+step = 5
+
+[[setting]]
+key = "restore_level"
+type = "int"
+label_key = "settings.restore_level.label"
+description_key = "settings.restore_level.description"
+default = 100
+min = 0
+max = 100
+step = 5
+
+# Safety net: an interrupted turn (Esc / Ctrl+C) never fires the Stop hook.
+[[setting]]
+key = "timeout_minutes"
+type = "int"
+label_key = "settings.timeout_minutes.label"
+description_key = "settings.timeout_minutes.description"
+default = 30
+min = 0
+max = 240
+step = 5
+
+[[service]]
+id = "service"
+entry = "service.luau"
+
+[[shortcut]]
+id = "toggle"
+entry = "shortcut.luau"
+
+[[widget]]
+id = "bar"
+entry = "bar.luau"

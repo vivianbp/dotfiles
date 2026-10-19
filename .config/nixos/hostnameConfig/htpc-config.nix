@@ -1,4 +1,4 @@
-{ ... }:
+{pkgs,  ... }:
 {
   imports = [
     ../hardwareConfig/htpc-hw.nix
@@ -6,5 +6,16 @@
   ];
 
   networking.hostName = "htpc";
-  system.stateVersion = "25.11";
+  virtualisation.waydroid.enable = true;
+  # Newer kernel versions may need
+  virtualisation.waydroid.package = pkgs.waydroid-nftables;
+
+  # Enable clipboard sharing
+  environment.systemPackages = [ pkgs.wl-clipboard ];
+
+  
+
+
+
+  system.stateVersion = "26.05";
 }

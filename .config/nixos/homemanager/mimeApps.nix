@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ ... }:
 
 {
   xdg.desktopEntries = {
@@ -59,7 +59,16 @@
       "application/pdf"                 = "app.zen_browser.zen.desktop";
 
       # text / editor
-      "text/plain"                      = "org.kde.kwrite.desktop";
+      "text/plain"                      = "org.kde.kate.desktop";
+
+      # code / markup → kwrite
+      "text/markdown"                   = "org.kde.kate.desktop";
+      "text/xml"                        = "org.kde.kate.desktop";
+      "text/css"                        = "org.kde.kate.desktop";
+      "text/javascript"                 = "org.kde.kate.desktop";
+      "application/json"                = "org.kde.kate.desktop";
+      "application/x-sh"                = "org.kde.kate.desktop";
+      "application/x-shellscript"       = "org.kde.kate.desktop";
 
       # messaging
       "x-scheme-handler/tg"             = "org.telegram.desktop.desktop";
@@ -197,15 +206,6 @@
       "application/x-font-otf"                      = "org.fontforge.FontForge.desktop";
       "application/vnd.ms-fontobject"               = "org.fontforge.FontForge.desktop";
       "application/x-font-type1"                    = "org.fontforge.FontForge.desktop";
-
-      # code / markup → kwrite
-      "text/markdown"                               = "org.kde.kwrite.desktop";
-      "text/xml"                                    = "org.kde.kwrite.desktop";
-      "text/css"                                    = "org.kde.kwrite.desktop";
-      "text/javascript"                             = "org.kde.kwrite.desktop";
-      "application/json"                            = "org.kde.kwrite.desktop";
-      "application/x-sh"                            = "org.kde.kwrite.desktop";
-      "application/x-shellscript"                   = "org.kde.kwrite.desktop";
 
       # torrents → transmission
       "application/x-bittorrent"                    = "transmission-qt.desktop";

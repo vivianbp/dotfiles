@@ -122,6 +122,7 @@
     dgop # another top replacement
     htop
     rsyslog
+    ddcutil
 
     ###### Networking ######
     networkmanagerapplet
@@ -146,6 +147,7 @@
     pavucontrol # gui sound manager from pulseaudio
     vlc
     transmission_4-qt
+    cider-2
     # plex-desktop
 
     ###### Web Browsers ######
@@ -204,6 +206,10 @@
     libvirt
     inputs.winapps.packages."${system}".winapps
     inputs.winapps.packages."${system}".winapps-launcher # optional
+    # RDP_ASKPASS for winapps: password lives in sops (see misc/winapps-host.nix)
+    (pkgs.writeShellScriptBin "winapps-askpass" ''
+      exec ${pkgs.sops}/bin/sops -d --extract '["winapps-password"]' /home/vboysepe/.config/nixos/secrets/winapps.yaml
+    '')
 
     ###### Disabled / Notes ######
     # inputs.humble-manager.packages.${pkgs.stdenv.system}.humble-manager
@@ -217,7 +223,6 @@
     pkgsUnstable.telegram-desktop
     pkgsUnstable.pangolin-cli
     # pkgsUnstable.code-cursor
-    pkgsUnstable.noctalia-shell
     # pkgsUnstable.esphome
     pkgsUnstable.opencode
 
