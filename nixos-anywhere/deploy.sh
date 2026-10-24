@@ -134,6 +134,8 @@ cp "$SCRIPT_DIR/disk-config.nix" "$LOCAL_NIXOS/hostnameConfig/${HOSTNAME}-disk.n
 # This is what the dotfiles flake's nixosConfiguration for this host will import.
 HOST_CONFIG="$LOCAL_NIXOS/hostnameConfig/${HOSTNAME}-config.nix"
 if [[ ! -f "$HOST_CONFIG" ]]; then
+  # Pin stateVersion to whatever the bootstrap config was actually installed with.
+  STATE_VERSION="$(nix eval --raw "$SCRIPT_DIR#nixosConfigurations.generic.config.system.stateVersion")"
   cat > "$HOST_CONFIG" << EOF
 { ... }:
 {
@@ -143,7 +145,7 @@ if [[ ! -f "$HOST_CONFIG" ]]; then
   ];
 
   networking.hostName = "${HOSTNAME}";
-  system.stateVersion = "25.11";
+  system.stateVersion = "${STATE_VERSION}";
 }
 EOF
 fi

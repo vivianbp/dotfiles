@@ -19,7 +19,7 @@ input {
             // Win is mapped to PrtSc and the usual Win
             // compose is prtsc + alt
             // caps lock is an additional Super/Win (mod) key
-            options "altwin:prtsc_rwin,compose:102,caps:super"
+            options "altwin:prtsc_rwin,compose:102,caps:super,altwin:menu_win"
             // If this section is empty, niri will fetch xkb settings
             // from org.freedesktop.locale1. You can control these using
             // localectl set-x11-keymap.
@@ -444,9 +444,11 @@ window-rule {
     default-floating-position x=10 y=10 relative-to="bottom-right"
 }
 window-rule {
-    match app-id=r#"^org\.telegram\.desktop$"#
-    match at-startup=true
+    match at-startup=true app-id=r#"^org\.telegram\.desktop$"#
     open-on-workspace "chat"
+}
+window-rule {
+    match  app-id=r#"^org\.telegram\.desktop$"#
     default-column-width { proportion 0.6; }
 }
 
@@ -488,6 +490,7 @@ window-rule {
 
 binds {
     Mod+Shift+V { spawn "sh" "-c" "cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"; }
+    Mod+Shift+B hotkey-overlay-title="Claude Dim: restore brightness" { spawn "noctalia" "msg" "plugin" "vboysepe/claude-dim:service" "all" "restore"; }
 
 
 
@@ -805,6 +808,10 @@ layer-rule { // wallpaper goes behind the task view
 spawn-at-startup "bash" "-c" "swaybg -i '/home/vboysepe/Pictures/bgnew.jpg' -m fill"
 
 spawn-at-startup "upower-notify"
+
+// mouse stuff custom mouse scrolling "--repeat-step-threshold" "120"
+spawn-at-startup "solaar" "--window=hide"
+
  
 environment {
 	DISPLAY ":0"

@@ -3,8 +3,8 @@
 {
   disko.devices = {
     disk.disk1 = {
-      # device = lib.mkDefault "/dev/nvme0n1";
-      device = lib.mkDefault "/dev/sda";
+      device = lib.mkDefault "/dev/nvme0n1";
+      # device = lib.mkDefault "/dev/sda";
       type = "disk";
       content = {
         type = "gpt";
