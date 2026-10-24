@@ -1,10 +1,15 @@
-{ ... }:
+{ pkgs, ... }:
 {
   imports = [
 
   ];
 
   networking.hostName = "karax";
+
+  # VA-API hardware video decode for the Intel HD 620 (Kaby Lake)
+  hardware.graphics.extraPackages = with pkgs; [ intel-media-driver ];
+  environment.systemPackages = with pkgs; [ libva-utils ];
+  environment.sessionVariables.LIBVA_DRIVER_NAME = "iHD";
   boot.kernelParams = [ "resume_offset=4294656" ];
   boot.resumeDevice = "/dev/mapper/nixos--vg-root";
   swapDevices = [{ device = "/var/swapfile"; size = 24 * 1024; }];
