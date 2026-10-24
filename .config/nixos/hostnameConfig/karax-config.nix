@@ -1,4 +1,4 @@
-{config, pkgs, ... }:
+{ ... }:
 {
   imports = [
 
@@ -12,7 +12,8 @@
   #IIO stands for the Industrial I/O subsystem of the Linux Kernel
   #I dont actually think this machine has one anymore ()
   hardware.sensor.iio.enable = true; 
- 
+  
+  programs.claude-dim.enable = true;
   
   boot.initrd.luks.devices = {
     root = {
@@ -32,5 +33,20 @@
   system.stateVersion = "21.11";
   hardware.logitech.wireless.enable = true;
   hardware.logitech.wireless.enableGraphical = true;
+
+
+
+
+  ### synergy
+  # services.synergy.server = {
+  #   enable = true;
+  # };
+
+
+  networking.firewall.allowedUDPPorts = [ 4242 ];
+  home-manager.users.vboysepe.imports = [
+    ../homemanager/lanMouse.nix
+    ../homemanager/niriMouseGestures.nix
+  ];
 
 }

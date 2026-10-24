@@ -73,15 +73,7 @@
           niri-flake.nixosModules.niri
           inputs.nix-index-database.nixosModules.nix-index
           inputs.noctalia-greeter.nixosModules.default
-        
-
-          # ({ pkgs, ... }: {
-          #   nixpkgs.overlays = [ claude-desktop.overlays.default ];
-          #   environment.systemPackages = [ pkgs.claude-desktop ];
-          # })
-          # ({ ... }: {
-          #   environment.systemPackages = [ inputs.claude-desktop.packages.x86_64-linux.claude-desktop ];
-          # })
+      
           ./homemanager
         ];
         specialArgs = { inherit inputs; };
