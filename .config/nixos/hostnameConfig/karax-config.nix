@@ -18,7 +18,7 @@
   #I dont actually think this machine has one anymore ()
   hardware.sensor.iio.enable = true; 
   
-  programs.claude-dim.enable = true;
+  # programs.claude-dim.enable = true;
   
   boot.initrd.luks.devices = {
     root = {

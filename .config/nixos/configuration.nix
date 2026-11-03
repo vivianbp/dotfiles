@@ -17,7 +17,6 @@
     ./starship.nix
     ./misc.nix
     ./printers.nix
-    ./noctaliaplugin/module.nix # programs.claude-dim; imported everywhere so disabling cleans up
   ];
   # stdenv.hostPlatform.system = inputs.system;
 

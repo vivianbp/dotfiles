@@ -68,6 +68,8 @@
           ./desktop.nix
           ./laptop.nix
           ./misc/thunderbolt.nix
+          # ../../projects/noctaliaplugin/module.nix # programs.claude-dim; imported everywhere so disabling cleans up
+
           # refind-mod.nixosModules.refind
           # catppuccin.nixosModules.catppuccin
           niri-flake.nixosModules.niri
