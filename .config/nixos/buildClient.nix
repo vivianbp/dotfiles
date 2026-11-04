@@ -13,5 +13,12 @@
     sshKey = "/home/vboysepe/.ssh/ans";
     maxJobs = 8;
     supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
+  }{
+    hostName = "kerrigan.kity.love";
+    system = "x86_64-linux";
+    sshUser = "nix-ssh";
+    sshKey = "/home/vboysepe/.ssh/ans";
+    maxJobs = 8;
+    supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
   }];
 }
