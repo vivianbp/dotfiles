@@ -2,12 +2,10 @@
 
 {
   imports = [
-    # ./homemanager/noctalia.nix
-    ./homemanager/mimeApps.nix
+    ./mimeApps.nix
   ];
 
 
-  # TODO please change the username & home directory to your own
   home.username = "vboysepe";
   home.homeDirectory = "/home/vboysepe";
 

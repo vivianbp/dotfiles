@@ -11,6 +11,6 @@
     useUserPackages = true;
     backupFileExtension = "backup";
     extraSpecialArgs = { inherit inputs pkgsUnstable; };
-    users.vboysepe.imports = [ ../home.nix ];
+    users.vboysepe.imports = [ ./home.nix ];
   };
 }
