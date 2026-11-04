@@ -43,7 +43,8 @@
     settings = {
       substituters = [
         "http://kerrigan:5000?priority=10"  # local harmonia cache — prefer over upstream
-        "https://cache.nixos.org"
+        "https://cache.nixos.org?priority=9"
+        "http://kerrigan.kity.love:5000"  # distant local harmonia cache — prefer over upstream
         "https://niri.cachix.org"
         "https://nix-community.cachix.org"
       ];
