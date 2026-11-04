@@ -42,21 +42,21 @@
 
     defaultApplications = {
       # browser
-      "text/html"                       = "app.zen_browser.zen.desktop";
-      "x-scheme-handler/http"           = "app.zen_browser.zen.desktop";
-      "x-scheme-handler/https"          = "app.zen_browser.zen.desktop";
-      "x-scheme-handler/about"          = "app.zen_browser.zen.desktop";
-      "x-scheme-handler/unknown"        = "app.zen_browser.zen.desktop";
-      "x-scheme-handler/chrome"         = "app.zen_browser.zen.desktop";
-      "application/x-extension-htm"     = "app.zen_browser.zen.desktop";
-      "application/x-extension-html"    = "app.zen_browser.zen.desktop";
-      "application/x-extension-shtml"   = "app.zen_browser.zen.desktop";
-      "application/xhtml+xml"           = "app.zen_browser.zen.desktop";
-      "application/x-extension-xhtml"   = "app.zen_browser.zen.desktop";
-      "application/x-extension-xht"     = "app.zen_browser.zen.desktop";
-      "x-scheme-handler/webcal"         = "app.zen_browser.zen.desktop";
-      "x-scheme-handler/mailto"         = "app.zen_browser.zen.desktop";
-      "application/pdf"                 = "app.zen_browser.zen.desktop";
+      "text/html"                       = "firefox.desktop";
+      "x-scheme-handler/http"           = "firefox.desktop";
+      "x-scheme-handler/https"          = "firefox.desktop";
+      "x-scheme-handler/about"          = "firefox.desktop";
+      "x-scheme-handler/unknown"        = "firefox.desktop";
+      "x-scheme-handler/chrome"         = "firefox.desktop";
+      "application/x-extension-htm"     = "firefox.desktop";
+      "application/x-extension-html"    = "firefox.desktop";
+      "application/x-extension-shtml"   = "firefox.desktop";
+      "application/xhtml+xml"           = "firefox.desktop";
+      "application/x-extension-xhtml"   = "firefox.desktop";
+      "application/x-extension-xht"     = "firefox.desktop";
+      "x-scheme-handler/webcal"         = "firefox.desktop";
+      "x-scheme-handler/mailto"         = "firefox.desktop";
+      "application/pdf"                 = "firefox.desktop";
 
       # text / editor
       "text/plain"                      = "org.kde.kate.desktop";
@@ -222,13 +222,13 @@
       "application/msword"                                             = "writer.desktop";
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document"   = "writer.desktop";
       "application/vnd.openxmlformats-officedocument.wordprocessingml.template"   = "writer.desktop";
-      "application/vnd.ms-excel"                                       = "calc.desktop";
+      "application/vnd.ms-excel"                                                  = "calc.desktop";
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"         = "calc.desktop";
       "application/vnd.openxmlformats-officedocument.spreadsheetml.template"      = "calc.desktop";
-      "application/vnd.ms-powerpoint"                                  = "impress.desktop";
+      "application/vnd.ms-powerpoint"                                             = "impress.desktop";
       "application/vnd.openxmlformats-officedocument.presentationml.presentation" = "impress.desktop";
       "application/vnd.openxmlformats-officedocument.presentationml.template"     = "impress.desktop";
-      "text/csv"                                                       = "calc.desktop";
+      "text/csv"                                                                  = "calc.desktop";
 
       # scheme handlers
       "x-scheme-handler/zoom"                       = "Zoom.desktop";
