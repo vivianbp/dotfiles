@@ -43,7 +43,7 @@ This is a multi-host NixOS flake managing 5 machines. All systems are `x86_64-li
 
 `flake.nix` defines all 5 `nixosConfigurations`. Each system receives `specialArgs = { inherit inputs; }` so all flake inputs are accessible in module files.
 
-**Key inputs:** `nixpkgs` (25.11 stable), `nixpkgs-unstable`, `home-manager` (release-25.11), `niri-flake`, `disko`, `catppuccin`, `nix-index-database`, `claude-desktop`, `humble-manager`.
+**Key inputs:** `nixpkgs` (26.05 stable), `nixpkgs-unstable`, `home-manager` (release-26.05), `niri-flake`, `disko`, `catppuccin`, `nix-index-database`, `claude-desktop`, `humble-manager`.
 
 Several packages in `programs.nix` are pulled from `pkgsUnstable`: `telegram-desktop`, `code-cursor`, `noctalia-shell`, `opencode`.
 
@@ -65,7 +65,7 @@ Defined in `starship.nix` using `networking.hostName` to pick a color per host:
 
 ### Home-Manager
 
-`home.nix` exists but is **not wired into the flake outputs**. It is referenced in comments only. The `homemanager/` directory contains `mimeApps.nix` and `noctalia.nix`. Hosts that do include home-manager (karax, blade) set it up via `home-manager.nixosModules.home-manager` in `flake.nix`.
+`homemanager/default.nix` is a NixOS module that imports the home-manager module and sets `home-manager.users.vboysepe` to `home.nix` (useGlobalPkgs, useUserPackages, `backupFileExtension = "backup"`, `inputs` in extraSpecialArgs). Hosts opt in by listing `./homemanager` in their `flake.nix` modules (karax, blade, talandar) — don't put `home-manager.*` options in `configuration.nix`, since the server hosts don't import the module. Per-host HM additions go in the host config, e.g. `home-manager.users.vboysepe.imports = [ ../homemanager/lanMouse.nix ];`. `homemanager/noctalia.nix` is not imported (needs a `noctalia` flake input).
 
 ### Distributed Builds
 

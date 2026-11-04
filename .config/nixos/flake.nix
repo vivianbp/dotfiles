@@ -68,20 +68,14 @@
           ./desktop.nix
           ./laptop.nix
           ./misc/thunderbolt.nix
+          # ../../projects/noctaliaplugin/module.nix # programs.claude-dim; imported everywhere so disabling cleans up
+
           # refind-mod.nixosModules.refind
           # catppuccin.nixosModules.catppuccin
           niri-flake.nixosModules.niri
           inputs.nix-index-database.nixosModules.nix-index
           inputs.noctalia-greeter.nixosModules.default
-        
-
-          # ({ pkgs, ... }: {
-          #   nixpkgs.overlays = [ claude-desktop.overlays.default ];
-          #   environment.systemPackages = [ pkgs.claude-desktop ];
-          # })
-          # ({ ... }: {
-          #   environment.systemPackages = [ inputs.claude-desktop.packages.x86_64-linux.claude-desktop ];
-          # })
+      
           ./homemanager
         ];
         specialArgs = { inherit inputs; };

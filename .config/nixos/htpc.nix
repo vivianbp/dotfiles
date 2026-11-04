@@ -1,10 +1,12 @@
-{ config, lib, pkgs, inputs, ... }:
+{ lib, pkgs, ... }:
 {
   # services.desktopManager.plasma6.enable = true;
 
   imports = [
     ./windowManager/plasma.nix
     ./misc/plasmaBigscreen.nix
+    ./misc/audio.nix
+
   ];
   services.displayManager = {
     sddm.enable = true;
@@ -12,7 +14,7 @@
   };
   programs.ydotool.enable = true;
 
-
+  # launch mlb and f1 kiosk mode firefox commands
   environment.systemPackages =
     let
       firefoxExe = lib.getExe pkgs.firefox;
@@ -72,34 +74,6 @@
     gamescopeSession.enable = true;
   };
 
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    jack.enable = true;
-    extraConfig = {
-      pipewire."99-silent-bell.conf" = {
-        "context.properties" = {
-          "module.x11.bell" = false;
-        };
-      };
-    };
-  };
-
-  services.pipewire.wireplumber.extraConfig."10-bluez" = {
-    "monitor.bluez.properties" = {
-      "bluez5.enable-sbc-xq" = true;
-      "bluez5.enable-msbc" = true;
-      "bluez5.enable-hw-volume" = true;
-      "bluez5.roles" = [
-        "hsp_hs"
-        "hsp_ag"
-        "hfp_hf"
-        "hfp_ag"
-      ];
-    };
-  };
 
   users.users.vboysepe.openssh.authorizedKeys.keys = [
     
