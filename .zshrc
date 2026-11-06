@@ -32,10 +32,23 @@ alias df='df -h'
 alias jour='journalctl -ef'
 alias feh='feh -F -. -Z'
 
+
+# ── Script: move file with date ───────────────────────────────────────────────
+cpd() {
+  local src="${1%/}" dest="${2:-.}"
+  local stamp=$(date +%F_%H%M%S)            # date and time
+  local name="${src##*/}"
+  local base="${name%.*}" ext=""
+  [[ "$name" == *.* && "$name" != .* ]] && ext=".${name##*.}"
+  [[ "$name" != *.* || "$name" == .* ]] && base="$name"
+  mkdir -p "$dest" && cp -a "$src" "$dest/${base}.${stamp}.bak${ext}"
+}
+
 # ── Aliases: NixOS ────────────────────────────────────────────────────────────
 alias nixswitch='sudo nixos-rebuild --flake /home/vboysepe/.config/nixos switch'
 alias nixtest='sudo nixos-rebuild --flake /home/vboysepe/.config/nixos test'
-alias nixupgrade='sudo nix flake update --flake /home/vboysepe/.config/nixos && nixswitch'
+alias nixupdate='cpd /home/vboysepe/.config/nixos/flake.lock /home/vboysepe/.config/nixos/lockfiles/ && sudo nix flake update --flake /home/vboysepe/.config/nixos'
+alias nixupgrade='nixupdate && nixswitch && uptime'
 alias nixpurge='sudo nix-collect-garbage --delete-older-than 3d'
 alias nixgens='sudo nix-env -p /nix/var/nix/profiles/system --list-generations'
 
