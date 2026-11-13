@@ -83,6 +83,7 @@
     jdk17_headless
     jq
     krb5
+    uv
     nix-direnv
     nixd
     nix-prefetch-scripts
@@ -102,7 +103,7 @@
     nano
     neovim
     vim
-    vscode
+    pkgsUnstable.vscode
     kdePackages.kate
 
     ###### System Administration / Disk & Storage ######
@@ -134,6 +135,7 @@
     nautilus
     nemo-with-extensions
     nemo-preview
+    kdePackages.ark # archive manager
     geeqie
     feh # image viewer
     maim # screenshots

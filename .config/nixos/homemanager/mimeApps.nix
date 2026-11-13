@@ -230,6 +230,42 @@
       "application/vnd.openxmlformats-officedocument.presentationml.template"     = "impress.desktop";
       "text/csv"                                                                  = "calc.desktop";
 
+      # archives → ark
+      "application/zip"                       = "org.kde.ark.desktop";
+      "application/x-zip-compressed"          = "org.kde.ark.desktop";
+      "application/x-7z-compressed"           = "org.kde.ark.desktop";
+      "application/x-rar"                     = "org.kde.ark.desktop";
+      "application/x-rar-compressed"          = "org.kde.ark.desktop";
+      "application/vnd.rar"                   = "org.kde.ark.desktop";
+      "application/x-tar"                     = "org.kde.ark.desktop";
+      "application/x-compressed-tar"          = "org.kde.ark.desktop";
+      "application/x-bzip-compressed-tar"     = "org.kde.ark.desktop";
+      "application/x-bzip2-compressed-tar"    = "org.kde.ark.desktop";
+      "application/x-xz-compressed-tar"       = "org.kde.ark.desktop";
+      "application/x-zstd-compressed-tar"     = "org.kde.ark.desktop";
+      "application/x-lzma-compressed-tar"     = "org.kde.ark.desktop";
+      "application/x-lzip-compressed-tar"     = "org.kde.ark.desktop";
+      "application/x-tarz"                    = "org.kde.ark.desktop";
+      "application/gzip"                      = "org.kde.ark.desktop";
+      "application/x-gzip"                    = "org.kde.ark.desktop";
+      "application/x-bzip"                    = "org.kde.ark.desktop";
+      "application/x-bzip2"                   = "org.kde.ark.desktop";
+      "application/x-xz"                      = "org.kde.ark.desktop";
+      "application/x-lzma"                    = "org.kde.ark.desktop";
+      "application/x-lzip"                    = "org.kde.ark.desktop";
+      "application/x-zstd"                    = "org.kde.ark.desktop";
+      "application/zstd"                      = "org.kde.ark.desktop";
+      "application/x-cpio"                    = "org.kde.ark.desktop";
+      "application/x-archive"                 = "org.kde.ark.desktop";
+      "application/x-compress"                = "org.kde.ark.desktop";
+      "application/x-lha"                     = "org.kde.ark.desktop";
+      "application/x-lzh-compressed"          = "org.kde.ark.desktop";
+      "application/x-arj"                     = "org.kde.ark.desktop";
+      "application/x-iso9660-image"           = "org.kde.ark.desktop";
+      "application/vnd.debian.binary-package" = "org.kde.ark.desktop";
+      "application/x-rpm"                     = "org.kde.ark.desktop";
+      "application/java-archive"              = "org.kde.ark.desktop";
+
       # scheme handlers
       "x-scheme-handler/zoom"                       = "Zoom.desktop";
       "x-scheme-handler/zoommtg"                    = "Zoom.desktop";
