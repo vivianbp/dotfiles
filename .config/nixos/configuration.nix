@@ -30,7 +30,6 @@
   boot.kernelParams = [ "mitigations=off" ];
 
   nix = {
-    settings.download-buffer-size = 500000000;
     gc = {
       automatic = true;
       dates = "weekly";
@@ -41,8 +40,9 @@
       dates = [ "weekly" ];
     };
     settings = {
+      download-buffer-size = 500000000;
       substituters = [
-        "http://kerrigan:5000?priority=10"  # local harmonia cache — prefer over upstream
+        "http://10.0.1.177:5000?priority=10"  # local harmonia cache — prefer over upstream
         "https://cache.nixos.org?priority=9"
         "http://kerrigan.kity.love:5000"  # distant local harmonia cache — prefer over upstream
         "https://niri.cachix.org"
@@ -149,7 +149,7 @@
       "dialout" #next two are for serial stuff
       "uucp"
       "ydotool"
-      "libvirt"
+      "libvirtd"
       "kvm"
       "input"
       "i2c"
