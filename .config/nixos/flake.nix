@@ -68,6 +68,7 @@
           ./desktop.nix
           ./laptop.nix
           ./misc/thunderbolt.nix
+          ./misc/smartcard.nix
           # ../../projects/noctaliaplugin/module.nix # programs.claude-dim; imported everywhere so disabling cleans up
 
           # refind-mod.nixosModules.refind
